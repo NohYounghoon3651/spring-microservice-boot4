@@ -63,7 +63,7 @@ api:
         This means that a delete request of a non-existing product will return **200 Ok**.
 
 server.port: 7001
-server.error.include-message: always
+spring.web.error.include-message: always
 
 app:
   product-service:
@@ -75,6 +75,10 @@ app:
   review-service:
     host: localhost
     port: 7004
+
+# Create the output bindings at startup. Otherwise StreamBridge creates them lazily on the first send,
+# and the three events sent in parallel can race (MessageDeliveryException: Dispatcher has no subscribers).
+spring.cloud.stream.output-bindings: products-out-0;recommendations-out-0;reviews-out-0
 
 spring.cloud.stream:
   defaultBinder: rabbit

@@ -1,8 +1,8 @@
 package se.magnus.microservices.composite.product.services.tracing;
 
 import io.micrometer.observation.ObservationRegistry;
-import org.springframework.boot.actuate.autoconfigure.observation.ObservationRegistryCustomizer;
 import org.springframework.boot.info.BuildProperties;
+import org.springframework.boot.micrometer.observation.autoconfigure.ObservationRegistryCustomizer;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration(proxyBeanMethods = false)

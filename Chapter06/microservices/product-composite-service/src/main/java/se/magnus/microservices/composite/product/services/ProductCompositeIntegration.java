@@ -2,8 +2,6 @@ package se.magnus.microservices.composite.product.services;
 
 import static org.springframework.http.HttpMethod.GET;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
@@ -23,6 +21,8 @@ import se.magnus.api.core.review.ReviewService;
 import se.magnus.api.exceptions.InvalidInputException;
 import se.magnus.api.exceptions.NotFoundException;
 import se.magnus.util.http.HttpErrorInfo;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 @Component
 public class ProductCompositeIntegration implements ProductService, RecommendationService, ReviewService {
@@ -207,7 +207,7 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
       case NOT_FOUND:
         return new NotFoundException(getErrorMessage(ex));
 
-      case UNPROCESSABLE_ENTITY:
+      case UNPROCESSABLE_CONTENT:
         return new InvalidInputException(getErrorMessage(ex));
 
       default:
@@ -220,7 +220,7 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
   private String getErrorMessage(HttpClientErrorException ex) {
     try {
       return mapper.readValue(ex.getResponseBodyAsString(), HttpErrorInfo.class).getMessage();
-    } catch (IOException ioex) {
+    } catch (JacksonException ioex) {
       return ex.getMessage();
     }
   }

@@ -1,7 +1,7 @@
 package se.magnus.microservices.core.product;
 
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
-import org.testcontainers.containers.MongoDBContainer;
+import org.testcontainers.mongodb.MongoDBContainer;
 
 public abstract class MongoDbTestBase {
 

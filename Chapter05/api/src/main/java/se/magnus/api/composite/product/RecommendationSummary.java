@@ -2,9 +2,11 @@ package se.magnus.api.composite.product;
 
 public class RecommendationSummary {
 
-  private final int recommendationId;
-  private final String author;
-  private final int rate;
+  // Fields are not final: Jackson 3 does not set final fields when deserializing
+  // (MapperFeature.ALLOW_FINAL_FIELDS_AS_MUTATORS is disabled by default).
+  private int recommendationId;
+  private String author;
+  private int rate;
 
   public RecommendationSummary(int recommendationId, String author, int rate) {
     this.recommendationId = recommendationId;

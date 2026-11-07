@@ -5,7 +5,7 @@ import org.springframework.aot.hint.RuntimeHintsRegistrar;
 import org.springframework.aot.hint.TypeReference;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.context.annotation.ImportRuntimeHints;
-import org.testcontainers.containers.MongoDBContainer;
+import org.testcontainers.mongodb.MongoDBContainer;
 
 @ImportRuntimeHints(MongoDbTestBase.MyHints.class)
 public abstract class MongoDbTestBase {

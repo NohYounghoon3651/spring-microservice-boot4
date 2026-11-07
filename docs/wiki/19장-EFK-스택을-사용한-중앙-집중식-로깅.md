@@ -1,0 +1,106 @@
+# 19장 EFK 스택을 사용한 중앙 집중식 로깅
+
+> 3부: 쿠버네티스로 경량 마이크로서비스 개발하기
+
+← [18장 서비스 메시를 사용한 관찰 가능성 및 관리 편의성 향상](18장-서비스-메시를-사용한-관찰-가능성-및-관리-편의성-향상) | [목차](Home) | [20장 마이크로서비스 모니터링](20장-마이크로서비스-모니터링) →
+
+## 학습 목표
+
+- Elasticsearch·Fluentd·Kibana로 로그를 한곳에 모은다
+- Fluentd 구성으로 자바 로그와 이스티오 로그를 파싱한다
+- 추적 ID로 여러 서비스의 로그를 묶어 조회한다
+
+## 이 장의 기술
+
+`Elasticsearch`, `Fluentd`, `Kibana`
+
+## 실습 코드
+
+- 코드: [`Chapter19`](https://github.com/NohYounghoon3651/spring-microservice-boot4/tree/main/Chapter19)
+- Boot 4 변경 내역: [`Chapter19/MIGRATION-BOOT4.md`](https://github.com/NohYounghoon3651/spring-microservice-boot4/blob/main/Chapter19/MIGRATION-BOOT4.md)
+
+## 실행하기
+
+**도커 컴포즈로 실행** (RabbitMQ)
+
+```bash
+cd Chapter19
+./gradlew build
+docker compose build
+HOST=localhost PORT=8443 HEALTH_URL=https://localhost:8443 USE_K8S=false ./test-em-all.bash start stop
+```
+
+**Kafka / 파티션 구성**
+
+```bash
+COMPOSE_FILE=docker-compose-kafka.yml HOST=localhost PORT=8443 HEALTH_URL=https://localhost:8443 USE_K8S=false ./test-em-all.bash start stop
+COMPOSE_FILE=docker-compose-partitions.yml HOST=localhost PORT=8443 HEALTH_URL=https://localhost:8443 USE_K8S=false ./test-em-all.bash start stop
+```
+
+**쿠버네티스 + 이스티오에 배포** (테스트 스크립트의 기본값이 이 구성입니다)
+
+```bash
+minikube start --driver=docker --container-runtime=docker --cpus=4 --memory=12g
+helm repo add jetstack https://charts.jetstack.io
+helm install cert-manager jetstack/cert-manager --create-namespace -n cert-manager --set crds.enabled=true --wait
+curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.31.4 sh -
+istioctl install --skip-confirmation --set profile=demo \
+  --set meshConfig.accessLogFile=/dev/stdout --set meshConfig.accessLogEncoding=JSON \
+  --set values.pilot.env.PILOT_JWT_PUB_KEY_REFRESH_INTERVAL=15s -f kubernetes/istio-tracing.yml
+kubectl apply -n istio-system -f kubernetes/istio-telemetry.yml
+for a in kiali jaeger prometheus grafana; do kubectl apply -n istio-system -f istio-1.31.4/samples/addons/$a.yaml; done
+for f in kubernetes/helm/components/*; do helm dep up $f; done
+for f in kubernetes/helm/environments/*; do helm dep up $f; done
+helm upgrade --install istio-hands-on-addons kubernetes/helm/environments/istio-system -n istio-system --wait
+minikube tunnel   # 별도 터미널에서 실행
+INGRESS_IP=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+echo "$INGRESS_IP minikube.me health.minikube.me grafana.minikube.me kiali.minikube.me prometheus.minikube.me tracing.minikube.me" | sudo tee -a /etc/hosts
+eval $(minikube docker-env) && docker compose build
+kubectl apply -f kubernetes/hands-on-namespace.yml
+helm install hands-on-dev-env kubernetes/helm/environments/dev-env -n hands-on
+kubectl wait --timeout=900s --for=condition=ready pod --all -n hands-on
+./test-em-all.bash
+```
+
+## 원본(Boot 3.5 / Java 24)과 달라진 점
+
+- Spring Boot 3.5.0 → 4.0.9
+- Java 24 → 21
+- Spring Cloud 2025.0.0 → 2025.1.4
+- Gradle 래퍼 8.14 → 8.14.6
+- create-projects.bash
+- 테스트 스타터 추가 (Boot 4 모듈화)
+- `@AutoConfigureWebTestClient` 추가
+- 테스트 애너테이션 패키지 변경
+- Testcontainers 2.0
+- Jackson 2 → Jackson 3
+- `catch (IOException)` → `catch (JacksonException)`
+- DTO 필드의 `final` 제거
+- `server.error.*` → `spring.web.error.*`
+- 원본 오타 수정
+- MongoDB 프로퍼티 `spring.data.mongodb.*` → `spring.mongodb.*`
+- springdoc-openapi 2.8.6 → 3.0.3
+- Dockerfile: 베이스 이미지와 레이어 추출
+- 헬스 API 패키지 변경
+- `spring-boot-starter-webclient` 추가
+- 게이트웨이 액추에이터 엔드포인트
+- OAuth2 리소스 서버 스타터
+- 인가 서버 스타터 이름 변경
+- 인가 서버 설정 클래스 패키지 변경
+- 시큐리티 테스트 스타터
+- `spring-boot-starter-aop` → `spring-boot-starter-aspectj`
+- Resilience4j 2.3.0 → 2.4.0
+- `ObservationRegistryCustomizer` 패키지 변경
+- 분산 추적(Brave + Zipkin) 의존성
+- Zipkin 프로퍼티 이름 변경
+- datasource-micrometer 1.0.0 → 2.2.1
+- `HttpStatus.UNPROCESSABLE_ENTITY` → `UNPROCESSABLE_CONTENT`
+- Jackson 3의 enum 직렬화
+- StreamBridge 출력 바인딩을 기동 시점에 생성
+- 실행 안정성 보강 (원본에도 있던 타이밍 문제)
+
+## 학습 체크리스트
+
+이 장의 체크리스트는 학습 이슈 [#19](https://github.com/NohYounghoon3651/spring-microservice-boot4/issues/19)에서 체크하며 진행하세요. 다 마치면 이슈를 닫으면 됩니다.
+
+← [18장 서비스 메시를 사용한 관찰 가능성 및 관리 편의성 향상](18장-서비스-메시를-사용한-관찰-가능성-및-관리-편의성-향상) | [목차](Home) | [20장 마이크로서비스 모니터링](20장-마이크로서비스-모니터링) →

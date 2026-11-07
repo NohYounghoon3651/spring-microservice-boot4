@@ -104,6 +104,18 @@ function testCompositeCreated() {
     assertEqual 3 $(echo $RESPONSE | jq ".reviews | length")
     if [ "$?" -eq "1" ] ; then return 1; fi
 
+    # Also wait for the products without recommendations and reviews. With Kafka their messages
+    # can be processed later than the ones above, e.g. while consumer groups are rebalanced.
+    if ! assertCurl 200 "curl $AUTH -k https://$HOST:$PORT/product-composite/$PROD_ID_NO_RECS -s"
+    then
+        echo -n "FAIL"
+        return 1
+    fi
+    if ! assertCurl 200 "curl $AUTH -k https://$HOST:$PORT/product-composite/$PROD_ID_NO_REVS -s"
+    then
+        echo -n "FAIL"
+        return 1
+    fi
     set -e
 }
 

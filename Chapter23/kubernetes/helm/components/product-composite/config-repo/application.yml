@@ -20,7 +20,7 @@ management.metrics.tags.application: ${spring.application.name}
 management.health.rabbit.enabled: true
 management.health.kafka.enabled: false
 
-management.zipkin.tracing.endpoint: http://jaeger-collector.istio-system:9411/api/v2/spans
+management.tracing.export.zipkin.endpoint: http://jaeger-collector.istio-system:9411/api/v2/spans
 management.tracing.sampling.probability: 1.0
 logging.pattern.correlation: "[${spring.application.name:},%X{traceId:-},%X{spanId:-}] "
 logging.include-application-name: false

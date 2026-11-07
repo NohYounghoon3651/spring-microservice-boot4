@@ -24,6 +24,10 @@ management.health.kafka.enabled: false
 # Native Compile: Required to get the Circuit Breaker's healthcheck work properly
 management.health.circuitbreakers.enabled: true
 
+# Spring Boot 4 / Jackson 3 writes enums using toString() by default. Write them by name, as with
+# Jackson 2, so /actuator/circuitbreakerevents reports state transitions like CLOSED_TO_OPEN.
+spring.jackson.datatype.enum.write-enums-using-to-string: false
+
 resilience4j.circuitbreaker:
   instances:
     product:

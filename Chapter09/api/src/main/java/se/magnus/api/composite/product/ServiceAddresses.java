@@ -1,10 +1,12 @@
 package se.magnus.api.composite.product;
 
 public class ServiceAddresses {
-  private final String cmp;
-  private final String pro;
-  private final String rev;
-  private final String rec;
+  // Fields are not final: Jackson 3 does not set final fields when deserializing
+  // (MapperFeature.ALLOW_FINAL_FIELDS_AS_MUTATORS is disabled by default).
+  private String cmp;
+  private String pro;
+  private String rev;
+  private String rec;
 
   public ServiceAddresses() {
     cmp = null;

@@ -58,7 +58,7 @@ api:
         422 - An **Unprocessable Entity** error will be returned
 
 server.port: 7001
-server.error.include-message: always
+spring.web.error.include-message: always
 
 app:
   product-service:

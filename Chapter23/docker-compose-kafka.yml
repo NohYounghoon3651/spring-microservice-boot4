@@ -6,16 +6,16 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker,streaming_partitioned,streaming_instance_0,kafka
       - SPRING_CONFIG_LOCATION=file:/config-repo/application.yml,file:/config-repo/product.yml
-      - SPRING_DATA_MONGODB_AUTHENTICATION_DATABASE=admin
-      - SPRING_DATA_MONGODB_USERNAME=${MONGODB_USR}
-      - SPRING_DATA_MONGODB_PASSWORD=${MONGODB_PWD}
+      - SPRING_MONGODB_AUTHENTICATION_DATABASE=admin
+      - SPRING_MONGODB_USERNAME=${MONGODB_USR}
+      - SPRING_MONGODB_PASSWORD=${MONGODB_PWD}
     volumes:
       - $PWD/config-repo:/config-repo
     depends_on:
       mongodb:
         condition: service_healthy
       kafka:
-        condition: service_started
+        condition: service_healthy
 
   product-p1:
     build: microservices/product-service
@@ -24,16 +24,16 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker,streaming_partitioned,streaming_instance_1,kafka
       - SPRING_CONFIG_LOCATION=file:/config-repo/application.yml,file:/config-repo/product.yml
-      - SPRING_DATA_MONGODB_AUTHENTICATION_DATABASE=admin
-      - SPRING_DATA_MONGODB_USERNAME=${MONGODB_USR}
-      - SPRING_DATA_MONGODB_PASSWORD=${MONGODB_PWD}
+      - SPRING_MONGODB_AUTHENTICATION_DATABASE=admin
+      - SPRING_MONGODB_USERNAME=${MONGODB_USR}
+      - SPRING_MONGODB_PASSWORD=${MONGODB_PWD}
     volumes:
       - $PWD/config-repo:/config-repo
     depends_on:
       mongodb:
         condition: service_healthy
       kafka:
-        condition: service_started
+        condition: service_healthy
 
   recommendation:
     build: microservices/recommendation-service
@@ -42,16 +42,16 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker,streaming_partitioned,streaming_instance_0,kafka
       - SPRING_CONFIG_LOCATION=file:/config-repo/application.yml,file:/config-repo/recommendation.yml
-      - SPRING_DATA_MONGODB_AUTHENTICATION_DATABASE=admin
-      - SPRING_DATA_MONGODB_USERNAME=${MONGODB_USR}
-      - SPRING_DATA_MONGODB_PASSWORD=${MONGODB_PWD}
+      - SPRING_MONGODB_AUTHENTICATION_DATABASE=admin
+      - SPRING_MONGODB_USERNAME=${MONGODB_USR}
+      - SPRING_MONGODB_PASSWORD=${MONGODB_PWD}
     volumes:
       - $PWD/config-repo:/config-repo
     depends_on:
       mongodb:
         condition: service_healthy
       kafka:
-        condition: service_started
+        condition: service_healthy
 
   recommendation-p1:
     build: microservices/recommendation-service
@@ -60,16 +60,16 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker,streaming_partitioned,streaming_instance_1,kafka
       - SPRING_CONFIG_LOCATION=file:/config-repo/application.yml,file:/config-repo/recommendation.yml
-      - SPRING_DATA_MONGODB_AUTHENTICATION_DATABASE=admin
-      - SPRING_DATA_MONGODB_USERNAME=${MONGODB_USR}
-      - SPRING_DATA_MONGODB_PASSWORD=${MONGODB_PWD}
+      - SPRING_MONGODB_AUTHENTICATION_DATABASE=admin
+      - SPRING_MONGODB_USERNAME=${MONGODB_USR}
+      - SPRING_MONGODB_PASSWORD=${MONGODB_PWD}
     volumes:
       - $PWD/config-repo:/config-repo
     depends_on:
       mongodb:
         condition: service_healthy
       kafka:
-        condition: service_started
+        condition: service_healthy
 
   review:
     build: microservices/review-service
@@ -86,7 +86,7 @@ services:
       mysql:
         condition: service_healthy
       kafka:
-        condition: service_started
+        condition: service_healthy
 
   review-p1:
     build: microservices/review-service
@@ -103,7 +103,7 @@ services:
       mysql:
         condition: service_healthy
       kafka:
-        condition: service_started
+        condition: service_healthy
 
   product-composite:
     build: microservices/product-composite-service
@@ -116,7 +116,7 @@ services:
       - $PWD/config-repo:/config-repo
     depends_on:
       kafka:
-        condition: service_started
+        condition: service_healthy
       auth-server:
         condition: service_healthy
 
@@ -166,6 +166,12 @@ services:
       - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
     depends_on:
       - zookeeper
+    healthcheck:
+      test: ["CMD-SHELL", "kafka-topics --bootstrap-server localhost:9092 --list > /dev/null 2>&1"]
+      interval: 5s
+      timeout: 10s
+      retries: 30
+      start_period: 10s
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.9.0

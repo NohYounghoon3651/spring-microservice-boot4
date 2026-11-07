@@ -2,9 +2,9 @@ package se.magnus.api.event;
 
 import static java.time.ZonedDateTime.now;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.ser.ZonedDateTimeSerializer;
 import java.time.ZonedDateTime;
+import tools.jackson.databind.annotation.JsonSerialize;
+import tools.jackson.databind.ext.javatime.ser.ZonedDateTimeSerializer;
 
 public class Event<K, T> {
 
@@ -13,10 +13,12 @@ public class Event<K, T> {
     DELETE
   }
 
-  private final Type eventType;
-  private final K key;
-  private final T data;
-  private final ZonedDateTime eventCreatedAt;
+  // Fields are not final: Jackson 3 does not set final fields when deserializing
+  // (MapperFeature.ALLOW_FINAL_FIELDS_AS_MUTATORS is disabled by default).
+  private Type eventType;
+  private K key;
+  private T data;
+  private ZonedDateTime eventCreatedAt;
 
   public Event() {
     this.eventType = null;

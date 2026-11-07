@@ -1,0 +1,70 @@
+name: 실행 오류
+description: 빌드·테스트·배포가 실패할 때 제보합니다
+title: "[오류] "
+labels: ["실행 오류"]
+body:
+  - type: markdown
+    attributes:
+      value: 먼저 위키의 [자주 발생하는 문제](../wiki/자주-발생하는-문제)를 확인해 주세요.
+  - type: dropdown
+    id: chapter
+    attributes:
+      label: 장
+      options:
+        - 01장
+        - 02장
+        - 03장
+        - 04장
+        - 05장
+        - 06장
+        - 07장
+        - 08장
+        - 09장
+        - 10장
+        - 11장
+        - 12장
+        - 13장
+        - 14장
+        - 15장
+        - 16장
+        - 17장
+        - 18장
+        - 19장
+        - 20장
+        - 21장
+        - 22장
+        - 23장
+    validations:
+      required: true
+  - type: dropdown
+    id: target
+    attributes:
+      label: 실행 방식
+      options:
+        - ./gradlew build (빌드·테스트)
+        - 도커 컴포즈 (RabbitMQ)
+        - 도커 컴포즈 (Kafka / 파티션)
+        - 네이티브 이미지 (23장)
+        - 쿠버네티스 (minikube)
+        - 쿠버네티스 + 이스티오
+    validations:
+      required: true
+  - type: textarea
+    id: command
+    attributes:
+      label: 실행한 명령
+      render: bash
+    validations:
+      required: true
+  - type: textarea
+    id: log
+    attributes:
+      label: 오류 메시지 / 로그
+      render: text
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: 환경
+      description: OS, java -version, docker version, (해당 시) minikube·istio 버전

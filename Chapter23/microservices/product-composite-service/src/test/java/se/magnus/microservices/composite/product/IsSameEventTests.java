@@ -7,12 +7,12 @@ import static se.magnus.api.event.Event.Type.CREATE;
 import static se.magnus.api.event.Event.Type.DELETE;
 import static se.magnus.microservices.composite.product.IsSameEvent.sameEventExceptCreatedAt;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledInNativeImage;
 import se.magnus.api.core.product.Product;
 import se.magnus.api.event.Event;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 class IsSameEventTests {
 
@@ -22,7 +22,7 @@ class IsSameEventTests {
   // - java.lang.Error: Cannot determine correct type for matchesSafely() method.
   @DisabledInNativeImage
   @Test
-  void testEventObjectCompare() throws JsonProcessingException {
+  void testEventObjectCompare() throws JacksonException {
 
     // Event #1 and #2 are the same event, but occurs as different times
     // Event #3 and #4 are different events

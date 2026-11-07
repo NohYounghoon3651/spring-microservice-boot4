@@ -1,6 +1,5 @@
 package se.magnus.microservices.composite.product;
 
-import com.fasterxml.jackson.datatype.jsr310.ser.ZonedDateTimeSerializer;
 import io.swagger.v3.oas.models.ExternalDocumentation;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
@@ -24,6 +23,7 @@ import se.magnus.api.core.product.Product;
 import se.magnus.api.core.recommendation.Recommendation;
 import se.magnus.api.core.review.Review;
 import se.magnus.api.event.Event;
+import tools.jackson.databind.ext.javatime.ser.ZonedDateTimeSerializer;
 
 @SpringBootApplication
 @ComponentScan("se.magnus")

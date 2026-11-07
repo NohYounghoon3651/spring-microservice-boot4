@@ -4,10 +4,12 @@ import java.time.ZonedDateTime;
 import org.springframework.http.HttpStatus;
 
 public class HttpErrorInfo {
-  private final ZonedDateTime timestamp;
-  private final String path;
-  private final HttpStatus httpStatus;
-  private final String message;
+  // Fields are not final: Jackson 3 does not set final fields when deserializing
+  // (MapperFeature.ALLOW_FINAL_FIELDS_AS_MUTATORS is disabled by default).
+  private ZonedDateTime timestamp;
+  private String path;
+  private HttpStatus httpStatus;
+  private String message;
 
   public HttpErrorInfo() {
     timestamp = null;

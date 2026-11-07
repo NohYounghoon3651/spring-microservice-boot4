@@ -1,6 +1,5 @@
 package se.magnus.microservices.core.recommendation;
 
-import com.fasterxml.jackson.datatype.jsr310.ser.ZonedDateTimeSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aot.hint.annotation.RegisterReflectionForBinding;
@@ -22,6 +21,7 @@ import reactor.core.publisher.Hooks;
 import se.magnus.api.core.recommendation.Recommendation;
 import se.magnus.api.event.Event;
 import se.magnus.microservices.core.recommendation.persistence.RecommendationEntity;
+import tools.jackson.databind.ext.javatime.ser.ZonedDateTimeSerializer;
 
 @SpringBootApplication
 @ComponentScan("se.magnus")
@@ -34,8 +34,8 @@ public class RecommendationServiceApplication {
     Hooks.enableAutomaticContextPropagation();
     ConfigurableApplicationContext ctx = SpringApplication.run(RecommendationServiceApplication.class, args);
 
-    String mongodDbHost = ctx.getEnvironment().getProperty("spring.data.mongodb.host");
-    String mongodDbPort = ctx.getEnvironment().getProperty("spring.data.mongodb.port");
+    String mongodDbHost = ctx.getEnvironment().getProperty("spring.mongodb.host");
+    String mongodDbPort = ctx.getEnvironment().getProperty("spring.mongodb.port");
     LOG.info("Connected to MongoDb: " + mongodDbHost + ":" + mongodDbPort);
   }
 

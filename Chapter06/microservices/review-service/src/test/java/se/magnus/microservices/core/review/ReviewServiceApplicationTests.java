@@ -10,11 +10,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import se.magnus.api.core.review.Review;
 import se.magnus.microservices.core.review.persistence.ReviewRepository;
 
+@AutoConfigureWebTestClient
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 class ReviewServiceApplicationTests extends MySqlTestBase {
 
@@ -62,7 +64,7 @@ class ReviewServiceApplicationTests extends MySqlTestBase {
 
     assertEquals(1, repository.count());
 
-    postAndVerifyReview(productId, reviewId, UNPROCESSABLE_ENTITY)
+    postAndVerifyReview(productId, reviewId, UNPROCESSABLE_CONTENT)
       .jsonPath("$.path").isEqualTo("/review")
       .jsonPath("$.message").isEqualTo("Duplicate key, Product Id: 1, Review Id:1");
 
@@ -112,7 +114,7 @@ class ReviewServiceApplicationTests extends MySqlTestBase {
 
     int productIdInvalid = -1;
 
-    getAndVerifyReviewsByProductId("?productId=" + productIdInvalid, UNPROCESSABLE_ENTITY)
+    getAndVerifyReviewsByProductId("?productId=" + productIdInvalid, UNPROCESSABLE_CONTENT)
       .jsonPath("$.path").isEqualTo("/review")
       .jsonPath("$.message").isEqualTo("Invalid productId: " + productIdInvalid);
   }

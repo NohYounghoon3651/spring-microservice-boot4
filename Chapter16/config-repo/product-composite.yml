@@ -76,11 +76,15 @@ api:
         This means that a delete request of a non-existing product will return **200 Ok**.
 
 server.port: 7001
-server.error.include-message: always
+spring.web.error.include-message: always
 
 spring.application.name: product-composite
 
 management.endpoint.health.group.readiness.include: readinessState, rabbit
+
+# Create the output bindings at startup. Otherwise StreamBridge creates them lazily on the first send,
+# and the three events sent in parallel can race (MessageDeliveryException: Dispatcher has no subscribers).
+spring.cloud.stream.output-bindings: products-out-0;recommendations-out-0;reviews-out-0
 
 spring.cloud.stream:
   default.contentType: application/json
@@ -114,6 +118,10 @@ resilience4j.retry:
       - org.springframework.web.reactive.function.client.WebClientResponseException$InternalServerError
 
 management.health.circuitbreakers.enabled: true
+
+# Spring Boot 4 / Jackson 3 writes enums using toString() by default. Write them by name, as with
+# Jackson 2, so /actuator/circuitbreakerevents reports state transitions like CLOSED_TO_OPEN.
+spring.jackson.datatype.enum.write-enums-using-to-string: false
 
 resilience4j.circuitbreaker:
   instances:

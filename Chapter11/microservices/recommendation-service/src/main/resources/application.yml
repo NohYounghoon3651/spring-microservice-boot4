@@ -1,5 +1,5 @@
 server.port: 7003
-server.error.include-message: always
+spring.web.error.include-message: always
 
 spring.application.name: recommendation
 
@@ -18,7 +18,7 @@ eureka:
     leaseRenewalIntervalInSeconds: 5
     leaseExpirationDurationInSeconds: 5
 
-spring.data.mongodb:
+spring.mongodb:
   host: localhost
   port: 27017
   database: recommendation-db
@@ -70,7 +70,7 @@ server.port: 8080
 
 app.eureka-server: eureka
 
-spring.data.mongodb.host: mongodb
+spring.mongodb.host: mongodb
 
 spring.rabbitmq.host: rabbitmq
 

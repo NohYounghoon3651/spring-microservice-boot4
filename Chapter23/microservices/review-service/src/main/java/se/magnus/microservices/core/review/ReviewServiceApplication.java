@@ -1,6 +1,5 @@
 package se.magnus.microservices.core.review;
 
-import com.fasterxml.jackson.datatype.jsr310.ser.ZonedDateTimeSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aot.hint.annotation.RegisterReflectionForBinding;
@@ -15,6 +14,7 @@ import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
 import se.magnus.api.core.review.Review;
 import se.magnus.api.event.Event;
+import tools.jackson.databind.ext.javatime.ser.ZonedDateTimeSerializer;
 
 @SpringBootApplication
 @ComponentScan("se.magnus")

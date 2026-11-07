@@ -2,14 +2,16 @@ package se.magnus.microservices.core.recommendation;
 
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
+import static org.springframework.http.HttpStatus.UNPROCESSABLE_CONTENT;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
+@AutoConfigureWebTestClient
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 class RecommendationServiceApplicationTests {
 
@@ -83,7 +85,7 @@ class RecommendationServiceApplicationTests {
       .uri("/recommendation?productId=" + productIdInvalid)
       .accept(APPLICATION_JSON)
       .exchange()
-      .expectStatus().isEqualTo(UNPROCESSABLE_ENTITY)
+      .expectStatus().isEqualTo(UNPROCESSABLE_CONTENT)
       .expectHeader().contentType(APPLICATION_JSON)
       .expectBody()
         .jsonPath("$.path").isEqualTo("/recommendation")

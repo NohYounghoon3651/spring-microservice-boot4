@@ -97,6 +97,18 @@ function testCompositeCreated() {
     assertEqual 3 $(echo $RESPONSE | jq ".reviews | length")
     if [ "$?" -eq "1" ] ; then return 1; fi
 
+    # Also wait for the products without recommendations and reviews. With Kafka their messages
+    # can be processed later than the ones above, e.g. while consumer groups are rebalanced.
+    if ! assertCurl 200 "curl http://$HOST:$PORT/product-composite/$PROD_ID_NO_RECS -s"
+    then
+        echo -n "FAIL"
+        return 1
+    fi
+    if ! assertCurl 200 "curl http://$HOST:$PORT/product-composite/$PROD_ID_NO_REVS -s"
+    then
+        echo -n "FAIL"
+        return 1
+    fi
     set -e
 }
 
@@ -185,6 +197,12 @@ fi
 waitForService curl http://$HOST:$PORT/actuator/health
 
 # Verify access to Eureka and that all four microservices are registered in Eureka
+# Wait until all microservices are registered in Eureka; a registration can take a few seconds
+# after the health check is OK, especially when several instances start at the same time
+for i in $(seq 1 30); do
+  [ "$(curl -H 'accept:application/json' $HOST:$PORT/eureka/api/apps -s | jq ".applications.application | length")" = "5" ] && break
+  sleep 2
+done
 assertCurl 200 "curl -H "accept:application/json" $HOST:$PORT/eureka/api/apps -s"
 assertEqual 5 $(echo $RESPONSE | jq ".applications.application | length")
 

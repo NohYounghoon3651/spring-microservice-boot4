@@ -104,7 +104,7 @@ spring.cloud.gateway.server.webflux.routes:
 
 spring.security.oauth2.resourceserver.jwt.issuer-uri: http://${app.auth-server}:9999
 
-management.endpoint.gateway.enabled: true
+management.endpoint.gateway.access: unrestricted
 management.endpoint.health.show-details: "ALWAYS"
 management.endpoints.web.exposure.include: "*"
 

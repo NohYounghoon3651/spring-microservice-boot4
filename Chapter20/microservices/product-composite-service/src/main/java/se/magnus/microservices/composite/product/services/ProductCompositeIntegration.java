@@ -5,12 +5,10 @@ import static reactor.core.publisher.Flux.empty;
 import static se.magnus.api.event.Event.Type.CREATE;
 import static se.magnus.api.event.Event.Type.DELETE;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
-import java.io.IOException;
 import java.net.URI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +36,8 @@ import se.magnus.api.exceptions.InvalidInputException;
 import se.magnus.api.exceptions.NotFoundException;
 import se.magnus.util.http.HttpErrorInfo;
 import se.magnus.util.http.ServiceUtil;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 @Component
 public class ProductCompositeIntegration implements ProductService, RecommendationService, ReviewService {
@@ -196,7 +196,7 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
       case NOT_FOUND:
         return new NotFoundException(getErrorMessage(wcre));
 
-      case UNPROCESSABLE_ENTITY:
+      case UNPROCESSABLE_CONTENT:
         return new InvalidInputException(getErrorMessage(wcre));
 
       default:
@@ -209,7 +209,7 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
   private String getErrorMessage(WebClientResponseException ex) {
     try {
       return mapper.readValue(ex.getResponseBodyAsString(), HttpErrorInfo.class).getMessage();
-    } catch (IOException ioex) {
+    } catch (JacksonException ioex) {
       return ex.getMessage();
     }
   }

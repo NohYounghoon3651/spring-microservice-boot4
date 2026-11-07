@@ -11,11 +11,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import se.magnus.api.core.product.Product;
 import se.magnus.microservices.core.product.persistence.ProductRepository;
 
+@AutoConfigureWebTestClient
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 class ProductServiceApplicationTests extends MongoDbTestBase {
 
@@ -49,7 +51,7 @@ class ProductServiceApplicationTests extends MongoDbTestBase {
 
     assertTrue(repository.findByProductId(productId).isPresent());
 
-    postAndVerifyProduct(productId, UNPROCESSABLE_ENTITY)
+    postAndVerifyProduct(productId, UNPROCESSABLE_CONTENT)
       .jsonPath("$.path").isEqualTo("/product")
       .jsonPath("$.message").isEqualTo("Duplicate key, Product Id: " + productId);
   }
@@ -90,7 +92,7 @@ class ProductServiceApplicationTests extends MongoDbTestBase {
 
     int productIdInvalid = -1;
 
-    getAndVerifyProduct(productIdInvalid, UNPROCESSABLE_ENTITY)
+    getAndVerifyProduct(productIdInvalid, UNPROCESSABLE_CONTENT)
       .jsonPath("$.path").isEqualTo("/product/" + productIdInvalid)
       .jsonPath("$.message").isEqualTo("Invalid productId: " + productIdInvalid);
   }

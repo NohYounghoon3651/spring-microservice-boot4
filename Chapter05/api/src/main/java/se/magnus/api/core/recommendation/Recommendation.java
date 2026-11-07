@@ -1,12 +1,14 @@
 package se.magnus.api.core.recommendation;
 
 public class Recommendation {
-  private final int productId;
-  private final int recommendationId;
-  private final String author;
-  private final int rate;
-  private final String content;
-  private final String serviceAddress;
+  // Fields are not final: Jackson 3 does not set final fields when deserializing
+  // (MapperFeature.ALLOW_FINAL_FIELDS_AS_MUTATORS is disabled by default).
+  private int productId;
+  private int recommendationId;
+  private String author;
+  private int rate;
+  private String content;
+  private String serviceAddress;
 
   public Recommendation() {
     productId = 0;

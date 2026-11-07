@@ -7,9 +7,9 @@ services:
       - SPRING_CONFIG_LOCATION=file:/config-repo/application.yml,file:/config-repo/product.yml
       - SPRING_RABBITMQ_USERNAME=${RABBITMQ_USR}
       - SPRING_RABBITMQ_PASSWORD=${RABBITMQ_PWD}
-      - SPRING_DATA_MONGODB_AUTHENTICATION_DATABASE=admin
-      - SPRING_DATA_MONGODB_USERNAME=${MONGODB_USR}
-      - SPRING_DATA_MONGODB_PASSWORD=${MONGODB_PWD}
+      - SPRING_MONGODB_AUTHENTICATION_DATABASE=admin
+      - SPRING_MONGODB_USERNAME=${MONGODB_USR}
+      - SPRING_MONGODB_PASSWORD=${MONGODB_PWD}
     volumes:
       - $PWD/config-repo:/config-repo
     depends_on:
@@ -26,9 +26,9 @@ services:
       - SPRING_CONFIG_LOCATION=file:/config-repo/application.yml,file:/config-repo/product.yml
       - SPRING_RABBITMQ_USERNAME=${RABBITMQ_USR}
       - SPRING_RABBITMQ_PASSWORD=${RABBITMQ_PWD}
-      - SPRING_DATA_MONGODB_AUTHENTICATION_DATABASE=admin
-      - SPRING_DATA_MONGODB_USERNAME=${MONGODB_USR}
-      - SPRING_DATA_MONGODB_PASSWORD=${MONGODB_PWD}
+      - SPRING_MONGODB_AUTHENTICATION_DATABASE=admin
+      - SPRING_MONGODB_USERNAME=${MONGODB_USR}
+      - SPRING_MONGODB_PASSWORD=${MONGODB_PWD}
     volumes:
       - $PWD/config-repo:/config-repo
     depends_on:
@@ -45,9 +45,9 @@ services:
       - SPRING_CONFIG_LOCATION=file:/config-repo/application.yml,file:/config-repo/recommendation.yml
       - SPRING_RABBITMQ_USERNAME=${RABBITMQ_USR}
       - SPRING_RABBITMQ_PASSWORD=${RABBITMQ_PWD}
-      - SPRING_DATA_MONGODB_AUTHENTICATION_DATABASE=admin
-      - SPRING_DATA_MONGODB_USERNAME=${MONGODB_USR}
-      - SPRING_DATA_MONGODB_PASSWORD=${MONGODB_PWD}
+      - SPRING_MONGODB_AUTHENTICATION_DATABASE=admin
+      - SPRING_MONGODB_USERNAME=${MONGODB_USR}
+      - SPRING_MONGODB_PASSWORD=${MONGODB_PWD}
     volumes:
       - $PWD/config-repo:/config-repo
     depends_on:
@@ -64,9 +64,9 @@ services:
       - SPRING_CONFIG_LOCATION=file:/config-repo/application.yml,file:/config-repo/recommendation.yml
       - SPRING_RABBITMQ_USERNAME=${RABBITMQ_USR}
       - SPRING_RABBITMQ_PASSWORD=${RABBITMQ_PWD}
-      - SPRING_DATA_MONGODB_AUTHENTICATION_DATABASE=admin
-      - SPRING_DATA_MONGODB_USERNAME=${MONGODB_USR}
-      - SPRING_DATA_MONGODB_PASSWORD=${MONGODB_PWD}
+      - SPRING_MONGODB_AUTHENTICATION_DATABASE=admin
+      - SPRING_MONGODB_USERNAME=${MONGODB_USR}
+      - SPRING_MONGODB_PASSWORD=${MONGODB_PWD}
     volumes:
       - $PWD/config-repo:/config-repo
     depends_on:

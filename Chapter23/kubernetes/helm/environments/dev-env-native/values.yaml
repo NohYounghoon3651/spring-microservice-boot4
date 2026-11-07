@@ -13,9 +13,9 @@ secrets:
     MONGO_INITDB_ROOT_PASSWORD: mongodb-pwd-dev
 
   mongodb-credentials:
-    SPRING_DATA_MONGODB_AUTHENTICATION_DATABASE: admin
-    SPRING_DATA_MONGODB_USERNAME: mongodb-user-dev
-    SPRING_DATA_MONGODB_PASSWORD: mongodb-pwd-dev
+    SPRING_MONGODB_AUTHENTICATION_DATABASE: admin
+    SPRING_MONGODB_USERNAME: mongodb-user-dev
+    SPRING_MONGODB_PASSWORD: mongodb-pwd-dev
 
   mysql-server-credentials:
     MYSQL_ROOT_PASSWORD: rootpwd

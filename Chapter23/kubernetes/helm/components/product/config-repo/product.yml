@@ -1,11 +1,11 @@
 server.port: 7002
-server.error.include-message: always
+spring.web.error.include-message: always
 
 spring.application.name: product
 
 management.endpoint.health.group.readiness.include: readinessState, rabbit, mongo
 
-spring.data.mongodb:
+spring.mongodb:
   host: localhost
   port: 27017
   database: product-db
@@ -42,7 +42,7 @@ spring.config.activate.on-profile: docker
 
 server.port: 80
 
-spring.data.mongodb.host: mongodb
+spring.mongodb.host: mongodb
 
 ---
 spring.config.activate.on-profile: streaming_partitioned
@@ -69,7 +69,7 @@ management.endpoint.health.group.readiness.include: readinessState, mongo
 ---
 spring.config.activate.on-profile: prod
 
-spring.data.mongodb.host: 172.17.0.1
+spring.mongodb.host: 172.17.0.1
 
 logging:
   level:

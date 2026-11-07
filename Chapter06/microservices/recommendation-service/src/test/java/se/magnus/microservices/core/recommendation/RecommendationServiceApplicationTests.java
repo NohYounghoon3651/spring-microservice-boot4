@@ -10,11 +10,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import se.magnus.api.core.recommendation.Recommendation;
 import se.magnus.microservices.core.recommendation.persistence.RecommendationRepository;
 
+@AutoConfigureWebTestClient
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 class RecommendationServiceApplicationTests extends MongoDbTestBase {
 
@@ -58,7 +60,7 @@ class RecommendationServiceApplicationTests extends MongoDbTestBase {
 
     assertEquals(1, repository.count());
 
-    postAndVerifyRecommendation(productId, recommendationId, UNPROCESSABLE_ENTITY)
+    postAndVerifyRecommendation(productId, recommendationId, UNPROCESSABLE_CONTENT)
       .jsonPath("$.path").isEqualTo("/recommendation")
       .jsonPath("$.message").isEqualTo("Duplicate key, Product Id: 1, Recommendation Id:1");
 
@@ -108,7 +110,7 @@ class RecommendationServiceApplicationTests extends MongoDbTestBase {
 
     int productIdInvalid = -1;
 
-    getAndVerifyRecommendationsByProductId("?productId=" + productIdInvalid, UNPROCESSABLE_ENTITY)
+    getAndVerifyRecommendationsByProductId("?productId=" + productIdInvalid, UNPROCESSABLE_CONTENT)
       .jsonPath("$.path").isEqualTo("/recommendation")
       .jsonPath("$.message").isEqualTo("Invalid productId: " + productIdInvalid);
   }

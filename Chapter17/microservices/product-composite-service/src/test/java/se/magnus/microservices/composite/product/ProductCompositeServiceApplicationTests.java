@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
@@ -24,6 +25,7 @@ import se.magnus.api.exceptions.InvalidInputException;
 import se.magnus.api.exceptions.NotFoundException;
 import se.magnus.microservices.composite.product.services.ProductCompositeIntegration;
 
+@AutoConfigureWebTestClient
 @SpringBootTest(
   webEnvironment = RANDOM_PORT,
   classes = {TestSecurityConfig.class},
@@ -83,7 +85,7 @@ class ProductCompositeServiceApplicationTests {
   @Test
   void getProductInvalidInput() {
 
-    getAndVerifyProduct(PRODUCT_ID_INVALID, UNPROCESSABLE_ENTITY)
+    getAndVerifyProduct(PRODUCT_ID_INVALID, UNPROCESSABLE_CONTENT)
       .jsonPath("$.path").isEqualTo("/product-composite/" + PRODUCT_ID_INVALID)
       .jsonPath("$.message").isEqualTo("INVALID: " + PRODUCT_ID_INVALID);
   }

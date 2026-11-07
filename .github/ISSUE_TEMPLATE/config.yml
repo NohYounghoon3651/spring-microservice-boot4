@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 학습 가이드 (위키)
+    url: https://github.com/NohYounghoon3651/spring-microservice-boot4/wiki
+    about: 장별 학습 목표와 실행 방법
+  - name: 자주 발생하는 문제
+    url: https://github.com/NohYounghoon3651/spring-microservice-boot4/wiki/자주-발생하는-문제
+    about: 실행 오류를 제보하기 전에 확인해 주세요
