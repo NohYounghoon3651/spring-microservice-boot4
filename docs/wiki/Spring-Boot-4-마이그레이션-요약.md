@@ -2,6 +2,19 @@
 
 교재 원본(Java 24 / Spring Boot 3.5 / Spring Cloud 2025.0)과 이 저장소 코드의 차이 중 학습할 때 알아 두면 좋은 것들입니다. 전체 목록은 [MIGRATION-BOOT4.md](https://github.com/NohYounghoon3651/spring-microservice-boot4/blob/main/MIGRATION-BOOT4.md)에 있습니다.
 
+## 원본 코드와 직접 비교하기
+
+교재 원본 코드는 [`original-boot3`](https://github.com/NohYounghoon3651/spring-microservice-boot4/tree/original-boot3) 브랜치에 그대로 있습니다. 장별 차이는 다음처럼 확인하세요.
+
+```bash
+git clone https://github.com/NohYounghoon3651/spring-microservice-boot4.git && cd spring-microservice-boot4
+git fetch origin original-boot3
+git diff origin/original-boot3 origin/main --stat -- Chapter13   # 바뀐 파일 목록
+git diff origin/original-boot3 origin/main -- Chapter13          # 전체 차이
+```
+
+웹에서는 [전체 비교 화면](https://github.com/NohYounghoon3651/spring-microservice-boot4/compare/original-boot3...boot4-migration-diff)으로 볼 수 있지만, 변경 파일이 1,000개가 넘어 일부만 표시됩니다.
+
 ## 교재 본문과 다르게 보이는 부분
 
 | 위치 | 교재 | 이 저장소 |

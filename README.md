@@ -8,7 +8,8 @@
 > 이 저장소의 예제 코드는 교재(자바 24, 스프링 부트 3.5, 스프링 클라우드 2025.0)에서 **자바 21, 스프링 부트 4.0.9, 스프링 클라우드 2025.1.4**로 옮겨져 있습니다. 전체 변경 내용은 [MIGRATION-BOOT4.md](MIGRATION-BOOT4.md)를, 장별 변경 파일은 각 `ChapterXX/MIGRATION-BOOT4.md`를 참고하세요. 모든 장의 빌드·테스트, docker compose·Kafka·네이티브 구성의 전체 시스템 테스트, 쿠버네티스(Istio 포함) 배포 테스트가 GitHub Actions에서 자동으로 실행됩니다.
 >
 > **학습 가이드**: [위키](https://github.com/NohYounghoon3651/spring-microservice-boot4/wiki)에서 장별 학습 목표와 실행 방법을 보고, [장별 학습 이슈](https://github.com/NohYounghoon3651/spring-microservice-boot4/issues?q=is%3Aissue+label%3A학습+sort%3Acreated-asc)(#1 = 1장 … #23 = 23장)의 체크리스트로 진도를 관리하세요. 부별 진행률은 [마일스톤](https://github.com/NohYounghoon3651/spring-microservice-boot4/milestones)에서 볼 수 있습니다.
-
+>
+> **원본과 비교**: 교재 원본 코드(Boot 3.5 / Java 24)는 [`original-boot3`](https://github.com/NohYounghoon3651/spring-microservice-boot4/tree/original-boot3) 브랜치에 있습니다. [전체 변경 비교](https://github.com/NohYounghoon3651/spring-microservice-boot4/compare/original-boot3...boot4-migration-diff)는 파일이 많아 웹에서는 일부만 보이므로, 장별로는 `git diff origin/original-boot3 origin/main -- Chapter13`처럼 확인하세요. 기여 방법은 [CONTRIBUTING.md](CONTRIBUTING.md)를 참고하세요.
 
 # 스프링 부트 3와 스프링 클라우드를 활용한 마이크로서비스 구축
 ### 스프링 클라우드, 이스티오, 쿠버네티스를 활용한 견고하고 확장성 있는 마이크로서비스 구축과 배포

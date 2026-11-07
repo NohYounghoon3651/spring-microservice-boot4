@@ -2,8 +2,11 @@ name: Build all chapters (Spring Boot 4.0.9 / Java 21)
 
 on:
   push:
+    branches: [main]
     paths-ignore: ['**/*.md', 'docs/**', '.github/ISSUE_TEMPLATE/**', '.github/workflows/wiki.yml']
   pull_request:
+  schedule:
+    - cron: '0 18 * * 0'   # every Monday 03:00 KST
   workflow_dispatch:
 
 jobs:
@@ -264,3 +267,19 @@ jobs:
             COMPOSE_FILE=$f docker compose logs --no-color >> compose.log 2>&1 || true
           done
           grep -E " (WARN|ERROR) " compose.log | sed -E 's/^[^|]*\| *[0-9TZ:.+-]+ +//' | cut -c1-220 | sort | uniq -c | sort -rn | head -40 | tee -a $GITHUB_STEP_SUMMARY || true
+
+  # Single status to require in branch protection: fails if any job above did not succeed.
+  ci-result:
+    name: CI result
+    if: always()
+    needs: [build, e2e, e2e-chapter03, e2e-variants, e2e-native]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check all jobs
+        env:
+          NEEDS: ${{ toJSON(needs) }}
+        run: |
+          echo "$NEEDS" | jq -r 'to_entries[] | "\(.key): \(.value.result)"'
+          if echo "$NEEDS" | jq -e 'to_entries | map(select(.value.result != "success")) | length > 0' > /dev/null; then
+            echo "::error::Some jobs did not succeed"; exit 1
+          fi
