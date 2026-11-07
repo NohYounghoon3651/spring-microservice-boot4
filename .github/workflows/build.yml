@@ -2,7 +2,7 @@ name: Build all chapters (Spring Boot 4.0.9 / Java 21)
 
 on:
   push:
-    branches: [main]
+    branches: [main, develop, 'release/**', 'hotfix/**']
     paths-ignore: ['**/*.md', 'docs/**', '.github/ISSUE_TEMPLATE/**', '.github/workflows/wiki.yml']
   pull_request:
   schedule:
@@ -10,7 +10,30 @@ on:
   workflow_dispatch:
 
 jobs:
+  # Pull requests that only touch documentation skip the builds, but still report "CI result".
+  changes:
+    name: Detect changes
+    runs-on: ubuntu-latest
+    outputs:
+      code: ${{ steps.filter.outputs.code }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - id: filter
+        run: |
+          if [ "${{ github.event_name }}" != "pull_request" ]; then echo "code=true" >> $GITHUB_OUTPUT; exit 0; fi
+          files=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }})
+          echo "$files"
+          if echo "$files" | grep -vE '\.md$|^docs/|^\.github/ISSUE_TEMPLATE/|^\.github/workflows/wiki\.yml$' | grep -q .; then
+            echo "code=true" >> $GITHUB_OUTPUT
+          else
+            echo "code=false" >> $GITHUB_OUTPUT
+          fi
+
   build:
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
     name: ${{ matrix.project }}
     runs-on: ubuntu-latest
     timeout-minutes: 45
@@ -272,7 +295,7 @@ jobs:
   ci-result:
     name: CI result
     if: always()
-    needs: [build, e2e, e2e-chapter03, e2e-variants, e2e-native]
+    needs: [changes, build, e2e, e2e-chapter03, e2e-variants, e2e-native]
     runs-on: ubuntu-latest
     steps:
       - name: Check all jobs
@@ -280,6 +303,7 @@ jobs:
           NEEDS: ${{ toJSON(needs) }}
         run: |
           echo "$NEEDS" | jq -r 'to_entries[] | "\(.key): \(.value.result)"'
-          if echo "$NEEDS" | jq -e 'to_entries | map(select(.value.result != "success")) | length > 0' > /dev/null; then
+          # "skipped" is fine (documentation-only pull request), anything else must succeed
+          if echo "$NEEDS" | jq -e '.changes.result != "success" or (to_entries | map(select(.value.result != "success" and .value.result != "skipped")) | length > 0)' > /dev/null; then
             echo "::error::Some jobs did not succeed"; exit 1
           fi

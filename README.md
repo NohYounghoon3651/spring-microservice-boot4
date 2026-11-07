@@ -10,6 +10,8 @@
 > **학습 가이드**: [위키](https://github.com/NohYounghoon3651/spring-microservice-boot4/wiki)에서 장별 학습 목표와 실행 방법을 보고, [장별 학습 이슈](https://github.com/NohYounghoon3651/spring-microservice-boot4/issues?q=is%3Aissue+label%3A학습+sort%3Acreated-asc)(#1 = 1장 … #23 = 23장)의 체크리스트로 진도를 관리하세요. 부별 진행률은 [마일스톤](https://github.com/NohYounghoon3651/spring-microservice-boot4/milestones)에서 볼 수 있습니다.
 >
 > **원본과 비교**: 교재 원본 코드(Boot 3.5 / Java 24)는 [`original-boot3`](https://github.com/NohYounghoon3651/spring-microservice-boot4/tree/original-boot3) 브랜치에 있습니다. [전체 변경 비교](https://github.com/NohYounghoon3651/spring-microservice-boot4/compare/original-boot3...boot4-migration-diff)는 파일이 많아 웹에서는 일부만 보이므로, 장별로는 `git diff origin/original-boot3 origin/main -- Chapter13`처럼 확인하세요. 기여 방법은 [CONTRIBUTING.md](CONTRIBUTING.md)를 참고하세요.
+>
+> **브랜치**: Git Flow를 따릅니다. `main`은 릴리스된 검증본(태그 `vX.Y.Z`), `develop`은 통합 브랜치이며, 작업은 `feature/<이슈번호>-…` 브랜치에서 `develop`으로 PR을 올립니다. 실습은 `main` 또는 [최신 릴리스](https://github.com/NohYounghoon3651/spring-microservice-boot4/releases)로 하세요.
 
 # 스프링 부트 3와 스프링 클라우드를 활용한 마이크로서비스 구축
 ### 스프링 클라우드, 이스티오, 쿠버네티스를 활용한 견고하고 확장성 있는 마이크로서비스 구축과 배포
