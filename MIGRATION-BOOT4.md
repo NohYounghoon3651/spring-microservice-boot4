@@ -75,6 +75,16 @@ Spring Framework 7은 422 상태 코드의 이름을 RFC 9110에 맞춰 `UNPROCE
 
 모든 자바 코드(108개 파일)에서 `UNPROCESSABLE_CONTENT`로 바꿨습니다. 응답 본문의 `error` 값도 `"Unprocessable Entity"`에서 `"Unprocessable Content"`로 바뀝니다.
 
+### 2-2. Jackson 3의 enum 직렬화 (13장 이후, test-em-all.bash로 발견)
+
+Jackson 3는 `EnumFeature.WRITE_ENUMS_USING_TO_STRING`이 기본으로 켜져 있어, enum을 `name()`이 아닌 `toString()`으로 씁니다. Resilience4j의 `/actuator/circuitbreakerevents` 응답은 애플리케이션의 `JsonMapper`로 직렬화됩니다(Boot의 액추에이터 전용 매퍼는 `OperationResponseBody` 응답에만 적용됨). 그래서 `stateTransition` 값이 `CLOSED_TO_OPEN`에서 `State transition from CLOSED to OPEN`으로 바뀌었고, 서킷 브레이커 검증이 실패했습니다.
+
+13~23장의 product-composite 설정(`config-repo/product-composite.yml`, 헬름 차트 안의 사본, 23장 `application.yml`)에 다음을 추가해 Jackson 2와 같은 출력으로 되돌렸습니다.
+
+```yaml
+spring.jackson.datatype.enum.write-enums-using-to-string: false
+```
+
 이 밖에, Boot 4는 liveness/readiness 프로브가 기본으로 켜져 있어 `/actuator/health` 응답에 `"groups":["liveness","readiness"]`가 추가됩니다. 응답 전체를 문자열로 비교하던 유레카 서버 테스트는 `"status":"UP"` 포함 여부만 확인하도록 고쳤습니다.
 
 ## 3. 설정 (application.yml, config-repo, docker-compose, 헬름)

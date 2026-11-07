@@ -189,3 +189,9 @@ Boot 4에서 스타터 이름 변경. Resilience4j 애너테이션과 컨피그 
 Spring Framework 7에서 422 상수 이름이 바뀌었고, `HttpStatus.resolve(422)`는 새 상수를 반환합니다. 옛 상수를 쓰면 422 검사 테스트가 실패하고, 복합 서비스의 `switch` 분기가 매칭되지 않아 500 응답이 나갑니다. (GitHub Actions 빌드에서 발견)
 
 대상: 자바 파일 6개
+
+## 32. Jackson 3의 enum 직렬화
+
+Jackson 3는 enum을 기본적으로 `toString()`으로 씁니다. 그래서 `/actuator/circuitbreakerevents`의 `stateTransition`이 `CLOSED_TO_OPEN` 대신 `State transition from CLOSED to OPEN`으로 나왔습니다. product-composite 설정에 `spring.jackson.datatype.enum.write-enums-using-to-string: false`를 추가해 교재와 같은 출력을 유지합니다. (test-em-all.bash로 발견)
+
+대상: `config-repo/product-composite.yml` 등 product-composite 설정 파일
