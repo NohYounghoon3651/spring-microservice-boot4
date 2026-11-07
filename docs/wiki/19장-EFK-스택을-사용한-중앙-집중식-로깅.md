@@ -62,6 +62,31 @@ kubectl wait --timeout=900s --for=condition=ready pod --all -n hands-on
 ./test-em-all.bash
 ```
 
+## 이전 장에서 달라진 점
+
+`Chapter18` → `Chapter19` 비교 (코드에서 자동 추출)
+
+- **파일**: 추가 10개 · 변경 0개 · 삭제 0개
+
+<details><summary>추가된 파일 목록</summary>
+
+- `kubernetes/efk/Dockerfile`
+- `kubernetes/efk/fluentd-ds.yml`
+- `kubernetes/efk/fluentd-hands-on-configmap.yml`
+- `kubernetes/efk/kibana-api-exported-objects.ndjson`
+- `kubernetes/helm/environments/logging/Chart.yaml`
+- `kubernetes/helm/environments/logging/templates/elasticsearch.yml`
+- `kubernetes/helm/environments/logging/templates/expose-elasticsearch.yml`
+- `kubernetes/helm/environments/logging/templates/expose-kibana.yml`
+- `kubernetes/helm/environments/logging/templates/kibana.yml`
+- `kubernetes/helm/environments/logging/values.yaml`
+
+</details>
+
+```bash
+git diff --no-index --stat Chapter18 Chapter19   # 직접 비교
+```
+
 ## 원본(Boot 3.5 / Java 24)과 달라진 점
 
 - Spring Boot 3.5.0 → 4.0.9
@@ -99,8 +124,26 @@ kubectl wait --timeout=900s --for=condition=ready pod --all -n hands-on
 - StreamBridge 출력 바인딩을 기동 시점에 생성
 - 실행 안정성 보강 (원본에도 있던 타이밍 문제)
 
+## 복습 질문
+
+**Q1. Fluentd가 로그를 Elasticsearch에 넣기 전에 하는 일은?**
+
+<details><summary>답 보기</summary>
+
+컨테이너 로그를 모아 형식(자바 로그, 이스티오 접근 로그)에 맞게 파싱하고 필드를 붙인다.
+
+</details>
+
+**Q2. 추적 ID를 로그에 남기면 무엇이 좋은가?**
+
+<details><summary>답 보기</summary>
+
+Kibana에서 trace ID 하나로 여러 서비스의 로그를 묶어 요청 흐름 전체를 볼 수 있다.
+
+</details>
+
 ## 학습 체크리스트
 
-이 장의 체크리스트는 학습 이슈 [#19](https://github.com/NohYounghoon3651/spring-microservice-boot4/issues/19)에서 체크하며 진행하세요. 다 마치면 이슈를 닫으면 됩니다.
+학습 이슈 [#19](https://github.com/NohYounghoon3651/spring-microservice-boot4/issues/19)의 하위 이슈(개념 · 코드 분석 · 실습 · 심화)를 순서대로 진행하며 닫아 가세요. 하위 이슈를 닫을 때마다 #19의 진행률이 올라갑니다.
 
 ← [18장 서비스 메시를 사용한 관찰 가능성 및 관리 편의성 향상](18장-서비스-메시를-사용한-관찰-가능성-및-관리-편의성-향상) | [목차](Home) | [20장 마이크로서비스 모니터링](20장-마이크로서비스-모니터링) →
