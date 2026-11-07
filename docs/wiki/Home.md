@@ -53,5 +53,6 @@
 
 - [Spring Boot 4 마이그레이션 요약](Spring-Boot-4-마이그레이션-요약)
 - [자주 발생하는 문제](자주-발생하는-문제)
+- [브랜치 전략](브랜치-전략)
 - 전체 변경 내역: [MIGRATION-BOOT4.md](https://github.com/NohYounghoon3651/spring-microservice-boot4/blob/main/MIGRATION-BOOT4.md)
 - CI 실행 결과: [Actions](https://github.com/NohYounghoon3651/spring-microservice-boot4/actions)

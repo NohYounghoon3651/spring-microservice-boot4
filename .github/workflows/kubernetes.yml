@@ -2,7 +2,10 @@ name: Kubernetes (Helm charts and deployment to Minikube)
 
 on:
   push:
-    branches: [main]
+    branches: [main, 'release/**', 'hotfix/**']
+    paths-ignore: ['**/*.md', 'docs/**', '.github/ISSUE_TEMPLATE/**', '.github/workflows/wiki.yml']
+  pull_request:
+    branches: [main]   # release/* and hotfix/* pull requests into main
     paths-ignore: ['**/*.md', 'docs/**', '.github/ISSUE_TEMPLATE/**', '.github/workflows/wiki.yml']
   schedule:
     - cron: '0 20 * * 0'   # every Monday 05:00 KST
