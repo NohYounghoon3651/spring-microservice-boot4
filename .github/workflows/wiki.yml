@@ -15,7 +15,7 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Push pages to the wiki
         run: |
           if ! git clone https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.wiki.git wiki; then
