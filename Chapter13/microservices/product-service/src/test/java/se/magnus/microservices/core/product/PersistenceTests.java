@@ -1,5 +1,6 @@
 package se.magnus.microservices.core.product;
 
+import java.util.Objects;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -107,7 +108,7 @@ class PersistenceTests extends MongoDbTestBase {
   private boolean areProductEqual(ProductEntity expectedEntity, ProductEntity actualEntity) {
     return
       (expectedEntity.getId().equals(actualEntity.getId()))
-      && (expectedEntity.getVersion() == actualEntity.getVersion())
+      && (Objects.equals(expectedEntity.getVersion(), actualEntity.getVersion()))
       && (expectedEntity.getProductId() == actualEntity.getProductId())
       && (expectedEntity.getName().equals(actualEntity.getName()))
       && (expectedEntity.getWeight() == actualEntity.getWeight());

@@ -87,7 +87,8 @@ git push -u origin release/1.1.0      # main 대상 PR, 병합 후 v1.1.0 태그
 | Disabled Spring CSRF protection (게이트웨이, 유레카, 컨피그 서버, `TestSecurityConfig`) | 분석에서 제외 (`codeql.yml`의 `query-filters`) | 브라우저 세션 없이 HTTP Basic·OAuth2 토큰으로 서비스끼리 호출하므로 CSRF가 해당되지 않음. 켜면 유레카 등록, `/encrypt`·`/decrypt` 실습이 동작하지 않음 |
 | Deprecated method invocation (`withDefaultPasswordEncoder`) | 분석에서 제외 | 교재의 데모 사용자. 코드 주석에 운영 사용 금지 명시. 컴파일러의 사용 중단 경고는 빌드에서 0건으로 관리 |
 | Constant interface anti-pattern (`MySqlTestBase`) | 분석에서 제외 | Testcontainers 컨테이너를 테스트끼리 공유하는 베이스 클래스 |
-| 위험한 암호화 알고리즘, `@Override` 누락 등 동작 변화 없이 고칠 수 있는 것 | 코드 수정 | 표준 표기·어노테이션으로 교재 의도를 바꾸지 않고 해결 |
+| Useless parameter (`getProductFallbackValue`의 `headers`, 18장 이후) | 닫기: False positive | Resilience4j의 폴백 메서드는 원래 메서드와 매개변수가 같아야 하므로 지울 수 없음 |
+| 위험한 암호화 알고리즘, `@Override` 누락, 박싱 타입의 `==` 비교 등 동작 변화 없이 고칠 수 있는 것 | 코드 수정 | 표준 표기·어노테이션·`Objects.equals`로 교재 의도를 바꾸지 않고 해결 |
 
 새로운 종류의 알림은 이슈로 남겨 판단한 뒤 이 표에 추가해 주세요. 교재 의도라서 모든 장에서 그대로 둘 규칙이면 `codeql.yml`의 `query-filters`에 추가하고, 한두 곳뿐이면 알림 화면에서 사유와 함께 닫습니다.
 
