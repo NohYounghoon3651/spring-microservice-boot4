@@ -37,6 +37,51 @@ COMPOSE_FILE=docker-compose-kafka.yml ./test-em-all.bash start stop
 COMPOSE_FILE=docker-compose-partitions.yml ./test-em-all.bash start stop
 ```
 
+## 이전 장에서 달라진 점
+
+`Chapter10` → `Chapter11` 비교 (코드에서 자동 추출)
+
+- **새 모듈**: `spring-cloud/authorization-server`
+- **새 의존성**: `org.htmlunit:htmlunit`, `org.springframework.boot:spring-boot-starter-security`, `org.springframework.boot:spring-boot-starter-security-oauth2-authorization-server`, `org.springframework.boot:spring-boot-starter-security-oauth2-resource-server`, `org.springframework.boot:spring-boot-starter-security-test`, `org.springframework.boot:spring-boot-starter-webmvc-test`
+- **파일**: 추가 19개 · 변경 23개 · 삭제 0개
+
+많이 바뀐 파일:
+
+- `test-em-all.bash` (61줄)
+- `microservices/product-composite-service/src/main/java/se/magnus/microservices/composite/product/services/ProductCompositeServiceImpl.java` (57줄)
+- `spring-cloud/gateway/src/main/resources/application.yml` (42줄)
+- `microservices/product-composite-service/src/main/resources/application.yml` (25줄)
+- `docker-compose-kafka.yml` (18줄)
+- `docker-compose-partitions.yml` (18줄)
+
+<details><summary>추가된 파일 목록</summary>
+
+- `auth0/env.bash`
+- `auth0/reset-tenant.bash`
+- `auth0/setup-tenant.bash`
+- `microservices/product-composite-service/src/main/java/se/magnus/microservices/composite/product/OpenApiConfig.java`
+- `microservices/product-composite-service/src/main/java/se/magnus/microservices/composite/product/SecurityConfig.java`
+- `microservices/product-composite-service/src/test/java/se/magnus/microservices/composite/product/TestSecurityConfig.java`
+- `spring-cloud/authorization-server/Dockerfile`
+- `spring-cloud/authorization-server/build.gradle`
+- `spring-cloud/authorization-server/settings.gradle`
+- `spring-cloud/authorization-server/src/main/java/sample/OAuth2AuthorizationServerApplication.java`
+- `spring-cloud/authorization-server/src/main/java/sample/config/AuthorizationServerConfig.java`
+- `spring-cloud/authorization-server/src/main/java/sample/config/DefaultSecurityConfig.java`
+- `spring-cloud/authorization-server/src/main/java/sample/jose/Jwks.java`
+- `spring-cloud/authorization-server/src/main/java/sample/jose/KeyGeneratorUtils.java`
+- `spring-cloud/authorization-server/src/main/resources/application.yml`
+- `spring-cloud/authorization-server/src/test/java/sample/OAuth2AuthorizationServerApplicationTests.java`
+- `spring-cloud/eureka-server/src/main/java/se/magnus/springcloud/eurekaserver/SecurityConfig.java`
+- `spring-cloud/gateway/src/main/java/se/magnus/springcloud/gateway/SecurityConfig.java`
+- `spring-cloud/gateway/src/main/resources/keystore/edge.p12`
+
+</details>
+
+```bash
+git diff --no-index --stat Chapter10 Chapter11   # 직접 비교
+```
+
 ## 원본(Boot 3.5 / Java 24)과 달라진 점
 
 - Spring Boot 3.5.0 → 4.0.9
@@ -69,8 +114,34 @@ COMPOSE_FILE=docker-compose-partitions.yml ./test-em-all.bash start stop
 - StreamBridge 출력 바인딩을 기동 시점에 생성
 - 실행 안정성 보강 (원본에도 있던 타이밍 문제)
 
+## 복습 질문
+
+**Q1. 접근 토큰의 스코프는 어디서 검사하나?**
+
+<details><summary>답 보기</summary>
+
+product-composite(리소스 서버)의 보안 설정에서 경로·메서드별로 `SCOPE_product:read` 같은 권한을 검사한다.
+
+</details>
+
+**Q2. Spring Boot 4에서 리소스 서버를 쓰려면 필요한 스타터는?**
+
+<details><summary>답 보기</summary>
+
+`spring-boot-starter-security-oauth2-resource-server`. 리소스 서버 자동 구성이 별도 모듈로 분리됐다.
+
+</details>
+
+**Q3. 스코프가 없는 토큰으로 쓰기 API를 호출하면?**
+
+<details><summary>답 보기</summary>
+
+인증은 되지만 권한이 없어 403 Forbidden을 받는다.
+
+</details>
+
 ## 학습 체크리스트
 
-이 장의 체크리스트는 학습 이슈 [#11](https://github.com/NohYounghoon3651/spring-microservice-boot4/issues/11)에서 체크하며 진행하세요. 다 마치면 이슈를 닫으면 됩니다.
+학습 이슈 [#11](https://github.com/NohYounghoon3651/spring-microservice-boot4/issues/11)의 하위 이슈(개념 · 코드 분석 · 실습 · 심화)를 순서대로 진행하며 닫아 가세요. 하위 이슈를 닫을 때마다 #11의 진행률이 올라갑니다.
 
 ← [10장 스프링 클라우드 게이트웨이를 에지 서버로 사용](10장-스프링-클라우드-게이트웨이를-에지-서버로-사용) | [목차](Home) | [12장 구성 중앙화](12장-구성-중앙화) →
