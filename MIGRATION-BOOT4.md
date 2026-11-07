@@ -103,6 +103,7 @@ GitHub CodeQL 분석에서 나온 알림 가운데 코드를 고치는 편이 �
 
 - 11~23장 authorization-server의 `KeyGeneratorUtils`: `KeyGenerator.getInstance("HmacSha256")` → `"HmacSHA256"`. 자바의 알고리즘 이름은 대소문자를 구분하지 않아 같은 HMAC-SHA256이지만, CodeQL은 표준 표기만 안전한 알고리즘으로 인식합니다.
 - 3·4·5장 product-composite의 `ProductCompositeIntegration`: `getProduct`·`getRecommendations`·`getReviews`에 `@Override` 추가(6장부터는 교재에도 있음).
+- 7~23장 product-service의 `PersistenceTests`: `Integer` 버전 값을 `==`로 비교하던 것을 `Objects.equals`로 고침(#219). `==`는 객체 참조를 비교하므로 -128~127 범위를 벗어나면 같은 값이어도 다르다고 판정합니다. 지금은 버전이 작아 통과했던 잠재 버그입니다(교재 원본에도 있음).
 
 CSRF 해제, `withDefaultPasswordEncoder` 같은 나머지 알림은 교재 예제의 의도라 그대로 두었습니다. 기준은 [CONTRIBUTING.md](CONTRIBUTING.md#codeql-알림-처리-기준)에 있습니다.
 
