@@ -1,0 +1,88 @@
+# Labels added to pull requests by the paths they change (actions/labeler)
+ch03:
+- changed-files:
+  - any-glob-to-any-file: 'Chapter03/**'
+ch04:
+- changed-files:
+  - any-glob-to-any-file: 'Chapter04/**'
+ch05:
+- changed-files:
+  - any-glob-to-any-file: 'Chapter05/**'
+ch06:
+- changed-files:
+  - any-glob-to-any-file: 'Chapter06/**'
+ch07:
+- changed-files:
+  - any-glob-to-any-file: 'Chapter07/**'
+ch09:
+- changed-files:
+  - any-glob-to-any-file: 'Chapter09/**'
+ch10:
+- changed-files:
+  - any-glob-to-any-file: 'Chapter10/**'
+ch11:
+- changed-files:
+  - any-glob-to-any-file: 'Chapter11/**'
+ch12:
+- changed-files:
+  - any-glob-to-any-file: 'Chapter12/**'
+ch13:
+- changed-files:
+  - any-glob-to-any-file: 'Chapter13/**'
+ch14:
+- changed-files:
+  - any-glob-to-any-file: 'Chapter14/**'
+ch15:
+- changed-files:
+  - any-glob-to-any-file: 'Chapter15/**'
+ch16:
+- changed-files:
+  - any-glob-to-any-file: 'Chapter16/**'
+ch17:
+- changed-files:
+  - any-glob-to-any-file: 'Chapter17/**'
+ch18:
+- changed-files:
+  - any-glob-to-any-file: 'Chapter18/**'
+ch19:
+- changed-files:
+  - any-glob-to-any-file: 'Chapter19/**'
+ch20:
+- changed-files:
+  - any-glob-to-any-file: 'Chapter20/**'
+ch23:
+- changed-files:
+  - any-glob-to-any-file: 'Chapter23/**'
+1부:
+- changed-files:
+  - any-glob-to-any-file:
+    - 'Chapter03/**'
+    - 'Chapter04/**'
+    - 'Chapter05/**'
+    - 'Chapter06/**'
+    - 'Chapter07/**'
+2부:
+- changed-files:
+  - any-glob-to-any-file:
+    - 'Chapter09/**'
+    - 'Chapter10/**'
+    - 'Chapter11/**'
+    - 'Chapter12/**'
+    - 'Chapter13/**'
+    - 'Chapter14/**'
+3부:
+- changed-files:
+  - any-glob-to-any-file:
+    - 'Chapter15/**'
+    - 'Chapter16/**'
+    - 'Chapter17/**'
+    - 'Chapter18/**'
+    - 'Chapter19/**'
+    - 'Chapter20/**'
+    - 'Chapter23/**'
+작업:
+- changed-files:
+  - any-glob-to-any-file: ['.github/**', '.devcontainer/**']
+documentation:
+- changed-files:
+  - any-glob-to-any-file: ['docs/**', '**/*.md']

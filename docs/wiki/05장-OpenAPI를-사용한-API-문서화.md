@@ -30,6 +30,32 @@ docker compose build
 ./test-em-all.bash start stop
 ```
 
+## 이전 장에서 달라진 점
+
+`Chapter04` → `Chapter05` 비교 (코드에서 자동 추출)
+
+- **새 의존성**: `org.springdoc:springdoc-openapi-starter-common`, `org.springdoc:springdoc-openapi-starter-webflux-ui`
+- **파일**: 추가 1개 · 변경 7개 · 삭제 0개
+
+많이 바뀐 파일:
+
+- `microservices/product-composite-service/src/main/resources/application.yml` (59줄)
+- `microservices/product-composite-service/src/main/java/se/magnus/microservices/composite/product/ProductCompositeServiceApplication.java` (42줄)
+- `api/src/main/java/se/magnus/api/composite/product/ProductCompositeService.java` (14줄)
+- `test-em-all.bash` (12줄)
+- `util/src/main/java/se/magnus/util/http/GlobalControllerExceptionHandler.java` (10줄)
+- `api/build.gradle` (1줄)
+
+<details><summary>추가된 파일 목록</summary>
+
+- `api/src/main/java/se/magnus/api/exceptions/BadRequestException.java`
+
+</details>
+
+```bash
+git diff --no-index --stat Chapter04 Chapter05   # 직접 비교
+```
+
 ## 원본(Boot 3.5 / Java 24)과 달라진 점
 
 - Spring Boot 3.5.0 → 4.0.9
@@ -46,8 +72,26 @@ docker compose build
 - Dockerfile: 베이스 이미지와 레이어 추출
 - `HttpStatus.UNPROCESSABLE_ENTITY` → `UNPROCESSABLE_CONTENT`
 
-## 학습 체크리스트
+## 복습 질문
 
-이 장의 체크리스트는 학습 이슈 [#5](https://github.com/NohYounghoon3651/spring-microservice-boot4/issues/5)에서 체크하며 진행하세요. 다 마치면 이슈를 닫으면 됩니다.
+**Q1. API 설명을 애너테이션에 직접 쓰지 않고 application.yml에 두는 이유는?**
+
+<details><summary>답 보기</summary>
+
+코드 변경 없이 문서를 고칠 수 있고, 긴 설명으로 코드가 지저분해지는 것을 막기 위해서다.
+
+</details>
+
+**Q2. Swagger UI는 어떤 경로로 열리나?**
+
+<details><summary>답 보기</summary>
+
+product-composite의 `/openapi/swagger-ui.html`(설정의 `springdoc.swagger-ui.path`).
+
+</details>
+
+## 학습 이슈
+
+학습 이슈 [#5](https://github.com/NohYounghoon3651/spring-microservice-boot4/issues/5)의 하위 이슈(개념 · 코드 분석 · 실습 · 심화)를 순서대로 진행하며 닫아 가세요. 하위 이슈를 닫을 때마다 #5의 진행률이 올라갑니다.
 
 ← [4장 도커를 사용한 배포](04장-도커를-사용한-배포) | [목차](Home) | [6장 영속성 추가](06장-영속성-추가) →

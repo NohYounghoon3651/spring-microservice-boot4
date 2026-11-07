@@ -6,8 +6,9 @@
 
 1. [실습 환경 준비](실습-환경-준비)에서 도구를 설치합니다.
 2. 아래 목차를 따라 장별 페이지에서 학습 목표와 실행 방법을 확인합니다.
-3. [이슈](https://github.com/NohYounghoon3651/spring-microservice-boot4/issues?q=is%3Aissue+label%3A학습)의 장별 학습 이슈에서 체크리스트를 체크하며 진행합니다. 다 마치면 이슈를 닫습니다.
-4. 진도는 [마일스톤](https://github.com/NohYounghoon3651/spring-microservice-boot4/milestones)(1부·2부·3부)에서 한눈에 볼 수 있습니다.
+3. [장별 학습 이슈](https://github.com/NohYounghoon3651/spring-microservice-boot4/issues?q=is%3Aissue+label%3A학습+sort%3Acreated-asc)(#1 = 1장 … #23 = 23장)의 하위 이슈(`개념` · `코드 분석` · `실습` · `심화`)를 순서대로 진행하며 닫습니다. 하위 이슈를 닫을 때마다 상위 이슈의 진행률이 올라갑니다.
+4. 진도는 [마일스톤](https://github.com/NohYounghoon3651/spring-microservice-boot4/milestones)(1부·2부·3부)에서, 장·부별 이슈는 라벨 `chXX` · `1부`/`2부`/`3부`로 걸러 볼 수 있습니다.
+5. 설치 없이 실습하려면 [Codespaces와 컨테이너 이미지](Codespaces와-컨테이너-이미지)를 참고하세요.
 
 ## 목차
 
@@ -53,5 +54,6 @@
 
 - [Spring Boot 4 마이그레이션 요약](Spring-Boot-4-마이그레이션-요약)
 - [자주 발생하는 문제](자주-발생하는-문제)
+- [브랜치 전략](브랜치-전략)
 - 전체 변경 내역: [MIGRATION-BOOT4.md](https://github.com/NohYounghoon3651/spring-microservice-boot4/blob/main/MIGRATION-BOOT4.md)
 - CI 실행 결과: [Actions](https://github.com/NohYounghoon3651/spring-microservice-boot4/actions)

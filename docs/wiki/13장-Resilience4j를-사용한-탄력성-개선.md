@@ -37,6 +37,26 @@ COMPOSE_FILE=docker-compose-kafka.yml ./test-em-all.bash start stop
 COMPOSE_FILE=docker-compose-partitions.yml ./test-em-all.bash start stop
 ```
 
+## 이전 장에서 달라진 점
+
+`Chapter12` → `Chapter13` 비교 (코드에서 자동 추출)
+
+- **새 의존성**: `io.github.resilience4j:resilience4j-reactor`, `io.github.resilience4j:resilience4j-spring-boot4`
+- **파일**: 추가 0개 · 변경 9개 · 삭제 0개
+
+많이 바뀐 파일:
+
+- `test-em-all.bash` (62줄)
+- `microservices/product-composite-service/src/main/java/se/magnus/microservices/composite/product/services/ProductCompositeIntegration.java` (44줄)
+- `microservices/product-service/src/main/java/se/magnus/microservices/core/product/services/ProductServiceImpl.java` (37줄)
+- `config-repo/product-composite.yml` (34줄)
+- `microservices/product-composite-service/src/test/java/se/magnus/microservices/composite/product/ProductCompositeServiceApplicationTests.java` (8줄)
+- `api/src/main/java/se/magnus/api/core/product/ProductService.java` (7줄)
+
+```bash
+git diff --no-index --stat Chapter12 Chapter13   # 직접 비교
+```
+
 ## 원본(Boot 3.5 / Java 24)과 달라진 점
 
 - Spring Boot 3.5.0 → 4.0.9
@@ -73,8 +93,34 @@ COMPOSE_FILE=docker-compose-partitions.yml ./test-em-all.bash start stop
 - StreamBridge 출력 바인딩을 기동 시점에 생성
 - 실행 안정성 보강 (원본에도 있던 타이밍 문제)
 
-## 학습 체크리스트
+## 복습 질문
 
-이 장의 체크리스트는 학습 이슈 [#13](https://github.com/NohYounghoon3651/spring-microservice-boot4/issues/13)에서 체크하며 진행하세요. 다 마치면 이슈를 닫으면 됩니다.
+**Q1. 회로 차단기가 OPEN일 때 호출은 어떻게 되나?**
+
+<details><summary>답 보기</summary>
+
+실제 호출을 하지 않고 바로 실패 처리되어 폴백 메서드가 응답을 만든다. 일정 시간 뒤 HALF_OPEN에서 시험 호출을 한다.
+
+</details>
+
+**Q2. 시간 제한과 재시도를 함께 쓸 때 주의할 점은?**
+
+<details><summary>답 보기</summary>
+
+재시도 횟수×대기 시간이 전체 응답 시간을 늘리고, 실패한 서비스에 부하를 더할 수 있으므로 회로 차단기와 함께 신중히 설정한다.
+
+</details>
+
+**Q3. 이 저장소에서 `circuitbreakerevents`의 상태 전환이 `CLOSED_TO_OPEN`으로 나오도록 한 설정은?**
+
+<details><summary>답 보기</summary>
+
+`spring.jackson.datatype.enum.write-enums-using-to-string: false`. Jackson 3는 기본으로 enum을 `toString()`으로 쓰기 때문이다.
+
+</details>
+
+## 학습 이슈
+
+학습 이슈 [#13](https://github.com/NohYounghoon3651/spring-microservice-boot4/issues/13)의 하위 이슈(개념 · 코드 분석 · 실습 · 심화)를 순서대로 진행하며 닫아 가세요. 하위 이슈를 닫을 때마다 #13의 진행률이 올라갑니다.
 
 ← [12장 구성 중앙화](12장-구성-중앙화) | [목차](Home) | [14장 분산 추적](14장-분산-추적) →

@@ -2,8 +2,11 @@ name: Kubernetes (Helm charts and deployment to Minikube)
 
 on:
   push:
-    branches: [main]
-    paths-ignore: ['**/*.md', 'docs/**', '.github/ISSUE_TEMPLATE/**', '.github/workflows/wiki.yml']
+    branches: [main, 'release/**', 'hotfix/**']
+    paths-ignore: ['**/*.md', 'docs/**', '.github/ISSUE_TEMPLATE/**', '.github/workflows/wiki.yml', '.github/workflows/labeler.yml', '.github/workflows/codeql.yml', '.github/workflows/images.yml', '.github/workflows/devcontainer.yml', '.github/labeler.yml', '.github/dependabot.yml', '.devcontainer/**']
+  pull_request:
+    branches: [main]   # release/* and hotfix/* pull requests into main
+    paths-ignore: ['**/*.md', 'docs/**', '.github/ISSUE_TEMPLATE/**', '.github/workflows/wiki.yml', '.github/workflows/labeler.yml', '.github/workflows/codeql.yml', '.github/workflows/images.yml', '.github/workflows/devcontainer.yml', '.github/labeler.yml', '.github/dependabot.yml', '.devcontainer/**']
   schedule:
     - cron: '0 20 * * 0'   # every Monday 05:00 KST
   workflow_dispatch:
@@ -22,8 +25,8 @@ jobs:
       run:
         working-directory: ${{ matrix.project }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: azure/setup-helm@v4
+      - uses: actions/checkout@v7
+      - uses: azure/setup-helm@v5
       - name: Install kubeconform
         run: |
           curl -sSL https://github.com/yannh/kubeconform/releases/download/v0.6.7/kubeconform-linux-amd64.tar.gz | tar xz -C /usr/local/bin kubeconform
@@ -57,13 +60,13 @@ jobs:
       run:
         working-directory: ${{ matrix.project }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: '21'
-      - uses: gradle/actions/setup-gradle@v4
-      - uses: azure/setup-helm@v4
+      - uses: gradle/actions/setup-gradle@v6
+      - uses: azure/setup-helm@v5
 
       - name: Start Minikube
         run: |
@@ -139,13 +142,13 @@ jobs:
       run:
         working-directory: ${{ matrix.project }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: '21'
-      - uses: gradle/actions/setup-gradle@v4
-      - uses: azure/setup-helm@v4
+      - uses: gradle/actions/setup-gradle@v6
+      - uses: azure/setup-helm@v5
 
       - name: Start Minikube
         run: |
