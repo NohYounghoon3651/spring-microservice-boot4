@@ -85,6 +85,16 @@ Jackson 3는 `EnumFeature.WRITE_ENUMS_USING_TO_STRING`이 기본으로 켜져 �
 spring.jackson.datatype.enum.write-enums-using-to-string: false
 ```
 
+### 2-3. StreamBridge 출력 바인딩을 기동 시점에 생성 (7장 이후, Kafka 구성 E2E 테스트로 발견)
+
+product-composite는 상품 하나를 만들 때 이벤트 3개(products, recommendations, reviews)를 `publish-pool` 스레드에서 병렬로 `StreamBridge.send()`합니다. `StreamBridge`는 출력 바인딩을 첫 전송 때 만들기 때문에, 바인딩 생성이 느린 Kafka 바인더에서는 가끔 아직 준비되지 않은 채널로 메시지가 보내집니다. 이때 `MessageDeliveryException: Dispatcher has no subscribers for channel`과 함께 500 응답이 납니다(같은 코드의 다른 장에서는 통과한, 타이밍에 따른 실패).
+
+Spring Cloud Stream 문서의 방법대로 출력 바인딩을 기동 시점에 미리 만들도록 product-composite 설정에 다음을 추가했습니다.
+
+```yaml
+spring.cloud.stream.output-bindings: products-out-0;recommendations-out-0;reviews-out-0
+```
+
 이 밖에, Boot 4는 liveness/readiness 프로브가 기본으로 켜져 있어 `/actuator/health` 응답에 `"groups":["liveness","readiness"]`가 추가됩니다. 응답 전체를 문자열로 비교하던 유레카 서버 테스트는 `"status":"UP"` 포함 여부만 확인하도록 고쳤습니다.
 
 ## 3. 설정 (application.yml, config-repo, docker-compose, 헬름)

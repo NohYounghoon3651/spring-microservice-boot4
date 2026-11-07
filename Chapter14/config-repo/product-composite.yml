@@ -78,6 +78,10 @@ api:
 server.port: 7001
 spring.web.error.include-message: always
 
+# Create the output bindings at startup. Otherwise StreamBridge creates them lazily on the first send,
+# and the three events sent in parallel can race (MessageDeliveryException: Dispatcher has no subscribers).
+spring.cloud.stream.output-bindings: products-out-0;recommendations-out-0;reviews-out-0
+
 spring.cloud.stream:
   default.contentType: application/json
   bindings:

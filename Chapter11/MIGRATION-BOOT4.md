@@ -165,3 +165,9 @@ Spring Authorization Server가 Spring Security 7에 통합됨. `OAuth2Authorizat
 Spring Framework 7에서 422 상수 이름이 바뀌었고, `HttpStatus.resolve(422)`는 새 상수를 반환합니다. 옛 상수를 쓰면 422 검사 테스트가 실패하고, 복합 서비스의 `switch` 분기가 매칭되지 않아 500 응답이 나갑니다. (GitHub Actions 빌드에서 발견)
 
 대상: 자바 파일 6개
+
+## 28. StreamBridge 출력 바인딩을 기동 시점에 생성
+
+상품 생성 시 이벤트 3개를 병렬로 보낼 때, 첫 전송에서 늦게 만들어지는 바인딩 때문에 Kafka 구성에서 가끔 `Dispatcher has no subscribers` 오류(500)가 났습니다. product-composite 설정에 `spring.cloud.stream.output-bindings: products-out-0;recommendations-out-0;reviews-out-0`을 추가해 바인딩을 기동 시점에 만듭니다.
+
+대상: product-composite 설정 파일

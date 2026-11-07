@@ -195,3 +195,9 @@ Spring Framework 7에서 422 상수 이름이 바뀌었고, `HttpStatus.resolve(
 Jackson 3는 enum을 기본적으로 `toString()`으로 씁니다. 그래서 `/actuator/circuitbreakerevents`의 `stateTransition`이 `CLOSED_TO_OPEN` 대신 `State transition from CLOSED to OPEN`으로 나왔습니다. product-composite 설정에 `spring.jackson.datatype.enum.write-enums-using-to-string: false`를 추가해 교재와 같은 출력을 유지합니다. (test-em-all.bash로 발견)
 
 대상: `config-repo/product-composite.yml` 등 product-composite 설정 파일
+
+## 33. StreamBridge 출력 바인딩을 기동 시점에 생성
+
+상품 생성 시 이벤트 3개를 병렬로 보낼 때, 첫 전송에서 늦게 만들어지는 바인딩 때문에 Kafka 구성에서 가끔 `Dispatcher has no subscribers` 오류(500)가 났습니다. product-composite 설정에 `spring.cloud.stream.output-bindings: products-out-0;recommendations-out-0;reviews-out-0`을 추가해 바인딩을 기동 시점에 만듭니다.
+
+대상: product-composite 설정 파일
