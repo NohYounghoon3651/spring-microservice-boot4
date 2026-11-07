@@ -31,6 +31,8 @@ git push -u origin release/1.1.0      # main 대상 PR, 병합 후 v1.1.0 태그
 # 병합 뒤 main을 develop에 역병합하는 PR을 연다
 ```
 
+`develop`은 기본 브랜치가 아니어서, PR 본문의 `Closes #번호`는 `develop`에 병합될 때 이슈를 자동으로 닫지 않습니다(`main`에 릴리스될 때 닫힘). 병합 후 이슈에 PR을 연결해 직접 닫아 주세요.
+
 PR 제목과 커밋 메시지는 `<유형>: <요약>` 형식을 권장합니다(`feat`, `fix`, `docs`, `ci`, `chore`, `release`).
 
 ## CI
