@@ -1,0 +1,32 @@
+name: Publish wiki
+
+# Publishes docs/wiki/*.md to the GitHub wiki of this repository.
+# The wiki must have been initialized once ("Create the first page" in the Wiki tab).
+on:
+  push:
+    branches: [main]
+    paths: ['docs/wiki/**']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Push pages to the wiki
+        run: |
+          if ! git clone https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.wiki.git wiki; then
+            echo "::error::Wiki is not initialized. Open the Wiki tab, click 'Create the first page' and save, then re-run this workflow."
+            exit 1
+          fi
+          rsync -a --delete --exclude .git docs/wiki/ wiki/
+          cd wiki
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then echo "Wiki is up to date"; exit 0; fi
+          git commit -m "Update wiki from docs/wiki (${GITHUB_SHA::7})"
+          git push

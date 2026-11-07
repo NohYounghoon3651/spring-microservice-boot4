@@ -1,0 +1,42 @@
+name: 질문
+description: 학습 중 궁금한 점을 질문합니다
+title: "[질문] "
+labels: ["질문"]
+body:
+  - type: dropdown
+    id: chapter
+    attributes:
+      label: 장
+      options:
+        - 01장
+        - 02장
+        - 03장
+        - 04장
+        - 05장
+        - 06장
+        - 07장
+        - 08장
+        - 09장
+        - 10장
+        - 11장
+        - 12장
+        - 13장
+        - 14장
+        - 15장
+        - 16장
+        - 17장
+        - 18장
+        - 19장
+        - 20장
+        - 21장
+        - 22장
+        - 23장
+    validations:
+      required: true
+  - type: textarea
+    id: question
+    attributes:
+      label: 질문 내용
+      description: 무엇이 궁금한지, 어디까지 해 봤는지 적어 주세요.
+    validations:
+      required: true

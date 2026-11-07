@@ -2,6 +2,7 @@ name: Kubernetes (Helm charts and deployment to Minikube)
 
 on:
   push:
+    paths-ignore: ['**/*.md', 'docs/**', '.github/ISSUE_TEMPLATE/**', '.github/workflows/wiki.yml']
   workflow_dispatch:
 
 jobs:

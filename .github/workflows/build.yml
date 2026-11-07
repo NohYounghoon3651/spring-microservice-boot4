@@ -2,6 +2,7 @@ name: Build all chapters (Spring Boot 4.0.9 / Java 21)
 
 on:
   push:
+    paths-ignore: ['**/*.md', 'docs/**', '.github/ISSUE_TEMPLATE/**', '.github/workflows/wiki.yml']
   pull_request:
   workflow_dispatch:
 

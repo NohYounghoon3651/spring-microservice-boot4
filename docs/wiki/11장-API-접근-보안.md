@@ -1,0 +1,76 @@
+# 11장 API 접근 보안
+
+> 2부: 스프링 클라우드로 마이크로서비스 관리하기
+
+← [10장 스프링 클라우드 게이트웨이를 에지 서버로 사용](10장-스프링-클라우드-게이트웨이를-에지-서버로-사용) | [목차](Home) | [12장 구성 중앙화](12장-구성-중앙화) →
+
+## 학습 목표
+
+- HTTPS로 외부 통신을 암호화한다
+- Spring Authorization Server(이제 Spring Security 7의 일부)로 OAuth 2.0 / OIDC 인가 서버를 만든다
+- 게이트웨이와 product-composite를 리소스 서버로 보호하고 스코프 기반 권한을 적용한다
+
+## 이 장의 기술
+
+`Spring Security 7`, `OAuth 2.0 / OIDC`, `JWT`
+
+## 실습 코드
+
+- 코드: [`Chapter11`](https://github.com/NohYounghoon3651/spring-microservice-boot4/tree/main/Chapter11)
+- Boot 4 변경 내역: [`Chapter11/MIGRATION-BOOT4.md`](https://github.com/NohYounghoon3651/spring-microservice-boot4/blob/main/Chapter11/MIGRATION-BOOT4.md)
+
+## 실행하기
+
+**도커 컴포즈로 실행** (RabbitMQ)
+
+```bash
+cd Chapter11
+./gradlew build
+docker compose build
+./test-em-all.bash start stop
+```
+
+**Kafka / 파티션 구성**
+
+```bash
+COMPOSE_FILE=docker-compose-kafka.yml ./test-em-all.bash start stop
+COMPOSE_FILE=docker-compose-partitions.yml ./test-em-all.bash start stop
+```
+
+## 원본(Boot 3.5 / Java 24)과 달라진 점
+
+- Spring Boot 3.5.0 → 4.0.9
+- Java 24 → 21
+- Spring Cloud 2025.0.0 → 2025.1.4
+- Gradle 래퍼 8.14 → 8.14.6
+- create-projects.bash
+- 테스트 스타터 추가 (Boot 4 모듈화)
+- `@AutoConfigureWebTestClient` 추가
+- 테스트 애너테이션 패키지 변경
+- TestRestTemplate 패키지 변경 및 `@AutoConfigureTestRestTemplate`
+- 유레카 서버 헬스 테스트 수정
+- Testcontainers 2.0
+- Jackson 2 → Jackson 3
+- `catch (IOException)` → `catch (JacksonException)`
+- DTO 필드의 `final` 제거
+- `server.error.*` → `spring.web.error.*`
+- MongoDB 프로퍼티 `spring.data.mongodb.*` → `spring.mongodb.*`
+- springdoc-openapi 2.8.6 → 3.0.3
+- Dockerfile: 베이스 이미지와 레이어 추출
+- 헬스 API 패키지 변경
+- `spring-boot-starter-webclient` 추가
+- `spring-boot-starter-restclient` 추가 (유레카 클라이언트)
+- 게이트웨이 액추에이터 엔드포인트
+- OAuth2 리소스 서버 스타터
+- 인가 서버 스타터 이름 변경
+- 인가 서버 설정 클래스 패키지 변경
+- 시큐리티 테스트 스타터
+- `HttpStatus.UNPROCESSABLE_ENTITY` → `UNPROCESSABLE_CONTENT`
+- StreamBridge 출력 바인딩을 기동 시점에 생성
+- 실행 안정성 보강 (원본에도 있던 타이밍 문제)
+
+## 학습 체크리스트
+
+이 장의 체크리스트는 학습 이슈 [#11](https://github.com/NohYounghoon3651/spring-microservice-boot4/issues/11)에서 체크하며 진행하세요. 다 마치면 이슈를 닫으면 됩니다.
+
+← [10장 스프링 클라우드 게이트웨이를 에지 서버로 사용](10장-스프링-클라우드-게이트웨이를-에지-서버로-사용) | [목차](Home) | [12장 구성 중앙화](12장-구성-중앙화) →
