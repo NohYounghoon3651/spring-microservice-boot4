@@ -25,7 +25,8 @@ git switch -c feature/42-add-something
 # 2. 커밋하고 push한 뒤 develop을 대상으로 PR을 연다 (본문에 "Closes #42")
 git push -u origin feature/42-add-something
 
-# 3. 릴리스: develop에서 release 브랜치를 만들고 main으로 PR → 병합 후 태그
+# 3. 릴리스: develop에서 release 브랜치를 만들고 main으로 PR → 병합 후 릴리스(태그) 발행
+#    릴리스를 발행하면 컨테이너 이미지가 게시되고, 위키가 main 기준으로 다시 게시된다
 git switch -c release/1.1.0 develop
 git push -u origin release/1.1.0      # main 대상 PR, 병합 후 v1.1.0 태그와 릴리스 노트
 # 병합 뒤 main을 develop에 역병합하는 PR을 연다
@@ -33,14 +34,48 @@ git push -u origin release/1.1.0      # main 대상 PR, 병합 후 v1.1.0 태그
 
 `develop`은 기본 브랜치가 아니어서, PR 본문의 `Closes #번호`는 `develop`에 병합될 때 이슈를 자동으로 닫지 않습니다(`main`에 릴리스될 때 닫힘). 병합 후 이슈에 PR을 연결해 직접 닫아 주세요.
 
-PR 제목과 커밋 메시지는 `<유형>: <요약>` 형식을 권장합니다(`feat`, `fix`, `docs`, `ci`, `chore`, `release`).
+## 커밋 메시지와 PR 제목 (깃모지)
 
-## CI
+커밋 메시지와 PR 제목은 `<깃모지> <유형>: <요약>` 형식으로 씁니다. 요약은 한국어로, 관련 이슈가 있으면 끝에 `(#번호)`를 붙입니다.
 
-- PR을 올리면 GitHub Actions가 모든 장의 빌드, 단위·통합 테스트, docker compose·Kafka·파티션·네이티브 구성의 전체 시스템 테스트를 실행합니다(약 1시간). 문서만 바꾼 PR은 빌드를 건너뜁니다.
+| 깃모지 | 유형 | 쓰는 경우 |
+|---|---|---|
+| ✨ | `feat` | 새 기능, 새 예제 |
+| 🐛 | `fix` | 버그 수정 |
+| 🚑️ | `fix` | `hotfix/*`의 긴급 수정 |
+| 📝 | `docs` | 문서, 위키, README |
+| ♻️ | `refactor` | 동작을 바꾸지 않는 코드 정리 |
+| ✅ | `test` | 테스트 추가·수정 |
+| 👷 | `ci` | GitHub Actions 워크플로 추가·수정 |
+| 💚 | `ci` | 깨진 CI 고치기 |
+| ⬆️ | `chore` | 의존성 버전 올리기 (Dependabot 포함) |
+| 🔧 | `chore` | 설정 파일 (`application.yml`, `docker-compose*.yml`, 헬름 values) |
+| 🐳 | `chore` | Dockerfile, 컨테이너 이미지 |
+| 🔥 | `chore` | 코드·파일 삭제 |
+| 🔖 | `release` | 릴리스, 버전 태그 |
+| 🔀 | `merge` | 브랜치 병합 (역병합 포함) |
+| ⏪️ | `revert` | 되돌리기 |
+
+예: `✨ feat: 13장 product 서비스에 서킷 브레이커 설정 추가 (#120)`, `🐛 fix: 18장 Istio 테스트의 메시지 대기 시간 보강`, `🔖 release: v1.1.0`
+
+깃모지는 [gitmoji.dev](https://gitmoji.dev)의 목록을 따릅니다. 표에 없는 경우도 그 목록에서 고르면 됩니다. 이미 push된 과거 커밋은 해시가 바뀌므로 고쳐 쓰지 않습니다.
+
+## CI와 자동화
+
+- PR을 올리면 모든 장의 빌드, 단위·통합 테스트, 전체 시스템 테스트가 실행됩니다(약 1시간). 문서만 바꾼 PR은 빌드를 건너뜁니다.
 - **CI result** 검사가 통과해야 병합합니다.
-- `main`으로 가는 PR(release·hotfix)은 쿠버네티스 검증(헬름, minikube, 이스티오)도 함께 실행합니다.
-- `main`과 `develop`은 매주 월요일 새벽 자동으로 다시 검증됩니다.
+- `main`으로 가는 PR(`release/*`·`hotfix/*`)은 쿠버네티스 검증도 함께 실행합니다.
+
+| 워크플로 | 언제 | 하는 일 |
+|---|---|---|
+| Build all chapters (`build.yml`) | PR, `develop`·`main`·`release/*`·`hotfix/*` push, 매주 월요일 03:00 KST | 19개 프로젝트 빌드·테스트, docker compose·Kafka·파티션·네이티브 전체 시스템 테스트. 결과는 **CI result** 하나로 모음 |
+| Kubernetes (`kubernetes.yml`) | `main` 대상 PR, `main` push, 매주 월요일 05:00 KST | 헬름 렌더링·스키마 검증, minikube(16·17장), minikube + Istio(18·19·20·23장) 배포 후 테스트 |
+| CodeQL (`codeql.yml`) | `main`·`develop` PR·push, 매주 수요일 04:30 KST | 자바 코드 보안 분석 |
+| Codespaces devcontainer (`devcontainer.yml`) | `.devcontainer/` 변경 | Codespaces 컨테이너가 만들어지고 4장이 빌드되는지 확인 |
+| Label pull requests (`labeler.yml`) | PR | 바뀐 파일에 따라 `chXX`, `N부`, `작업`, `documentation` 라벨 부착 |
+| Publish wiki (`wiki.yml`) | `main`의 `docs/wiki/` 변경 | 위키에 게시 (커밋 `📝 docs: update wiki …`) |
+| Publish container images (`images.yml`) | 릴리스 발행 | 장별 서비스 이미지를 `ghcr.io/nohyounghoon3651/spring-microservice-boot4/chXX-<서비스>:<버전>`·`latest`로 게시 |
+| Dependabot (`dependabot.yml`) | 매월 | `develop` 대상 PR: Actions(`⬆️ ci(deps)`), Gradle 패치 버전(`⬆️ chore(deps)`) |
 
 ## 이슈
 
@@ -70,5 +105,5 @@ PR 제목과 커밋 메시지는 `<유형>: <요약>` 형식을 권장합니다(
 
 ```bash
 git fetch origin original-boot3
-git diff origin/original-boot3 origin/develop -- Chapter13
+git diff origin/original-boot3 origin/main -- Chapter13
 ```

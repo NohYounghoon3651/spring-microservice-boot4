@@ -1,6 +1,6 @@
 name: 질문
 description: 학습 중 궁금한 점을 질문합니다
-title: "[질문] "
+title: "❓ [질문] "
 labels: ["질문"]
 body:
   - type: dropdown

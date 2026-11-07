@@ -24,7 +24,7 @@ JDK 21. 교재는 24를 쓰지만 이 저장소는 Java 21로 옮겨져 있다.
 
 </details>
 
-## 학습 체크리스트
+## 학습 이슈
 
 학습 이슈 [#21](https://github.com/NohYounghoon3651/spring-microservice-boot4/issues/21)의 하위 이슈(개념 · 코드 분석 · 실습 · 심화)를 순서대로 진행하며 닫아 가세요. 하위 이슈를 닫을 때마다 #21의 진행률이 올라갑니다.
 
