@@ -121,7 +121,7 @@ class RecommendationServiceApplicationTests extends MongoDbTestBase {
 
     int productIdInvalid = -1;
 
-    getAndVerifyRecommendationsByProductId("?productId=" + productIdInvalid, UNPROCESSABLE_ENTITY)
+    getAndVerifyRecommendationsByProductId("?productId=" + productIdInvalid, UNPROCESSABLE_CONTENT)
       .jsonPath("$.path").isEqualTo("/recommendation")
       .jsonPath("$.message").isEqualTo("Invalid productId: " + productIdInvalid);
   }

@@ -207,7 +207,7 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
       case NOT_FOUND:
         return new NotFoundException(getErrorMessage(ex));
 
-      case UNPROCESSABLE_ENTITY:
+      case UNPROCESSABLE_CONTENT:
         return new InvalidInputException(getErrorMessage(ex));
 
       default:

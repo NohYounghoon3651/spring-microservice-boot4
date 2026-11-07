@@ -125,7 +125,7 @@ class ReviewServiceApplicationTests extends MySqlTestBase {
 
     int productIdInvalid = -1;
 
-    getAndVerifyReviewsByProductId("?productId=" + productIdInvalid, UNPROCESSABLE_ENTITY)
+    getAndVerifyReviewsByProductId("?productId=" + productIdInvalid, UNPROCESSABLE_CONTENT)
       .jsonPath("$.path").isEqualTo("/review")
       .jsonPath("$.message").isEqualTo("Invalid productId: " + productIdInvalid);
   }

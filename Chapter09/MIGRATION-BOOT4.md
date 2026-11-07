@@ -129,3 +129,9 @@ Boot 4에서 `WebClient.Builder` 자동 구성(관찰/추적 계측 포함)은 `
 Spring Cloud Netflix 5의 유레카 클라이언트는 `RestClient` 전송을 쓰며 문서상 `spring-boot-restclient`가 필요.
 
 대상: `microservices/product-composite-service/build.gradle`, `microservices/product-service/build.gradle`, `microservices/recommendation-service/build.gradle`, `microservices/review-service/build.gradle`
+
+## 22. `HttpStatus.UNPROCESSABLE_ENTITY` → `UNPROCESSABLE_CONTENT`
+
+Spring Framework 7에서 422 상수 이름이 바뀌었고, `HttpStatus.resolve(422)`는 새 상수를 반환합니다. 옛 상수를 쓰면 422 검사 테스트가 실패하고, 복합 서비스의 `switch` 분기가 매칭되지 않아 500 응답이 나갑니다. (GitHub Actions 빌드에서 발견)
+
+대상: 자바 파일 6개

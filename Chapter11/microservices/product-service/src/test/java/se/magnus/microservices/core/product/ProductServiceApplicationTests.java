@@ -111,7 +111,7 @@ class ProductServiceApplicationTests extends MongoDbTestBase {
 
     int productIdInvalid = -1;
 
-    getAndVerifyProduct(productIdInvalid, UNPROCESSABLE_ENTITY)
+    getAndVerifyProduct(productIdInvalid, UNPROCESSABLE_CONTENT)
       .jsonPath("$.path").isEqualTo("/product/" + productIdInvalid)
       .jsonPath("$.message").isEqualTo("Invalid productId: " + productIdInvalid);
   }

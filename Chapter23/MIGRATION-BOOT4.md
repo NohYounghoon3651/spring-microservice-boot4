@@ -195,3 +195,9 @@ Boot 4.0.9가 관리하는 버전.
 Boot 4 네이티브 이미지는 GraalVM 25 이상이 필요. Boot 플러그인은 Java 21 툴체인을 보고 `BP_JVM_VERSION=21`을 넘기므로 `bootBuildImage`에 `BP_JVM_VERSION=25`(와 `BP_NATIVE_IMAGE=true`)를 명시. 자바 코드는 21로 컴파일되고 GraalVM 25가 네이티브로 변환.
 
 대상: `microservices/product-composite-service/build.gradle`, `microservices/product-service/build.gradle`, `microservices/recommendation-service/build.gradle`, `microservices/review-service/build.gradle`
+
+## 33. `HttpStatus.UNPROCESSABLE_ENTITY` → `UNPROCESSABLE_CONTENT`
+
+Spring Framework 7에서 422 상수 이름이 바뀌었고, `HttpStatus.resolve(422)`는 새 상수를 반환합니다. 옛 상수를 쓰면 422 검사 테스트가 실패하고, 복합 서비스의 `switch` 분기가 매칭되지 않아 500 응답이 나갑니다. (GitHub Actions 빌드에서 발견)
+
+대상: 자바 파일 6개

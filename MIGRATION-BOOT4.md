@@ -66,6 +66,15 @@
 1. **DTO의 `final` 필드 제거.** Jackson 3는 `MapperFeature.ALLOW_FINAL_FIELDS_AS_MUTATORS`가 기본값 `false`입니다. 교재의 `Event`, `HttpErrorInfo`, `ProductAggregate`, `RecommendationSummary`, `ReviewSummary`, `ServiceAddresses`(3~5장은 `Product`, `Recommendation`, `Review`도)는 "기본 생성자 + `private final` 필드 + getter" 구조라서, 그대로 두면 **예외 없이 빈 객체로 역직렬화**됩니다. 메시지 소비자가 `eventType == null` 오류를 내거나 POST 본문이 비는 식으로 나타납니다. 그래서 이 클래스들의 필드에서 `final`만 뺐습니다(JSON 형태는 같음).
 2. **`@SpringBootTest`가 더 이상 `WebTestClient`/`TestRestTemplate`을 만들지 않습니다.** 해당 테스트 클래스에 `@AutoConfigureWebTestClient` 또는 `@AutoConfigureTestRestTemplate`을 붙였습니다.
 
+### 2-1. `HttpStatus.UNPROCESSABLE_ENTITY` → `HttpStatus.UNPROCESSABLE_CONTENT` (GitHub Actions 빌드로 발견)
+
+Spring Framework 7은 422 상태 코드의 이름을 RFC 9110에 맞춰 `UNPROCESSABLE_CONTENT`로 바꾸고, `UNPROCESSABLE_ENTITY`는 사용 중단(deprecated)으로 남겼습니다. 둘 다 값은 422지만 `HttpStatus.resolve(422)`/`valueOf(422)`는 **새 상수**를 반환합니다. 그래서 옛 상수를 그대로 쓰면 다음 두 곳이 깨집니다.
+
+- 테스트의 `expectStatus().isEqualTo(UNPROCESSABLE_ENTITY)`가 실패합니다(서로 다른 enum 상수).
+- product-composite의 `switch (HttpStatus.resolve(...)) { case UNPROCESSABLE_ENTITY: ... }`가 실행 중에 매칭되지 않습니다. 이 경우 `InvalidInputException`으로 변환되지 않아, 422 대신 500 응답이 나갑니다.
+
+모든 자바 코드(108개 파일)에서 `UNPROCESSABLE_CONTENT`로 바꿨습니다. 응답 본문의 `error` 값도 `"Unprocessable Entity"`에서 `"Unprocessable Content"`로 바뀝니다.
+
 이 밖에, Boot 4는 liveness/readiness 프로브가 기본으로 켜져 있어 `/actuator/health` 응답에 `"groups":["liveness","readiness"]`가 추가됩니다. 응답 전체를 문자열로 비교하던 유레카 서버 테스트는 `"status":"UP"` 포함 여부만 확인하도록 고쳤습니다.
 
 ## 3. 설정 (application.yml, config-repo, docker-compose, 헬름)
@@ -123,7 +132,7 @@ tasks.named('bootBuildImage') {
 
 ## 7. 검증한 것과 하지 못한 것
 
-이 변환 작업 환경에서는 Maven Central에 접속할 수 없어 **Gradle 빌드와 테스트를 실제로 실행하지는 못했습니다.** 대신 다음을 확인했습니다.
+모든 장은 저장소의 GitHub Actions 워크플로(`.github/workflows/build.yml`)로 자바 21 + Docker 환경에서 `./gradlew build`(Testcontainers 테스트 포함)를 실행해 검증합니다. 그 전에 오프라인으로 다음도 확인했습니다.
 
 - 변경된 자바 파일 418개 전부 `javac` 구문 검사 통과
 - 자바 import 4,239개(스프링, Jackson 3, Testcontainers, Resilience4j, Micrometer, Brave 네임스페이스)를 대상 버전의 실제 클래스 목록과 대조 — 미해결 0개 (같은 검사를 원본 코드에 돌리면 옛 패키지 19종이 잡힘)

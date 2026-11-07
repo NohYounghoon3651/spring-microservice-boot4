@@ -63,3 +63,9 @@ Jackson 3는 `MapperFeature.ALLOW_FINAL_FIELDS_AS_MUTATORS`가 기본 비활성�
 `server.error.include-message: always` → `spring.web.error.include-message: always`.
 
 대상: `2-basic-rest-services/microservices/product-composite-service/src/main/resources/application.yml`, `2-basic-rest-services/microservices/product-service/src/main/resources/application.yml`, `2-basic-rest-services/microservices/recommendation-service/src/main/resources/application.yml`, `2-basic-rest-services/microservices/review-service/src/main/resources/application.yml`
+
+## 11. `HttpStatus.UNPROCESSABLE_ENTITY` → `UNPROCESSABLE_CONTENT`
+
+Spring Framework 7에서 422 상수 이름이 바뀌었고, `HttpStatus.resolve(422)`는 새 상수를 반환합니다. 옛 상수를 쓰면 422 검사 테스트가 실패하고, 복합 서비스의 `switch` 분기가 매칭되지 않아 500 응답이 나갑니다. (GitHub Actions 빌드에서 발견)
+
+대상: 자바 파일 6개
