@@ -1,5 +1,8 @@
 blank_issues_enabled: true
 contact_links:
+  - name: 질문·토론 (Discussions)
+    url: https://github.com/NohYounghoon3651/spring-microservice-boot4/discussions
+    about: 학습 중 궁금한 점, 실습 경험, 개선 아이디어를 자유롭게 나눕니다
   - name: 학습 가이드 (위키)
     url: https://github.com/NohYounghoon3651/spring-microservice-boot4/wiki
     about: 장별 학습 목표와 실행 방법
