@@ -1,0 +1,121 @@
+name: Kubernetes (Helm charts and deployment to Minikube)
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  # Render every Helm environment and validate the manifests against the Kubernetes schemas.
+  helm-validate:
+    name: helm ${{ matrix.project }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        project: [Chapter16, Chapter17, Chapter18, Chapter19, Chapter20, Chapter23]
+    defaults:
+      run:
+        working-directory: ${{ matrix.project }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/setup-helm@v4
+      - name: Install kubeconform
+        run: |
+          curl -sSL https://github.com/yannh/kubeconform/releases/download/v0.6.7/kubeconform-linux-amd64.tar.gz | tar xz -C /usr/local/bin kubeconform
+          kubeconform -v
+      - name: Render and validate
+        run: |
+          set -e
+          for f in kubernetes/helm/components/*; do helm dep up $f > /dev/null; done
+          for e in kubernetes/helm/environments/*; do
+            echo "=== $e"
+            helm dep up $e > /dev/null
+            helm lint $e
+            helm template $(basename $e) $e --namespace hands-on > rendered.yaml
+            kubeconform -strict -summary -ignore-missing-schemas \
+              -schema-location default \
+              -schema-location 'https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json' \
+              rendered.yaml
+          done
+
+  # Deploy the system with Helm to Minikube and run the book's test-em-all.bash against it.
+  minikube:
+    name: minikube ${{ matrix.project }}
+    needs: helm-validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    strategy:
+      fail-fast: false
+      matrix:
+        project: [Chapter16, Chapter17]
+    defaults:
+      run:
+        working-directory: ${{ matrix.project }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v4
+      - uses: azure/setup-helm@v4
+
+      - name: Start Minikube
+        run: |
+          if ! command -v minikube; then
+            curl -sSLo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+            sudo install minikube /usr/local/bin/minikube
+          fi
+          minikube start --driver=docker --cpus=4 --memory=12g
+          kubectl get nodes
+
+      - name: Install ingress and cert-manager (Chapter 17)
+        if: matrix.project == 'Chapter17'
+        run: |
+          minikube addons enable ingress
+          helm repo add jetstack https://charts.jetstack.io
+          helm install cert-manager jetstack/cert-manager --create-namespace --namespace cert-manager \
+            --set crds.enabled=true --wait --timeout 10m
+          kubectl -n ingress-nginx wait --for=condition=ready pod -l app.kubernetes.io/component=controller --timeout=300s
+
+      - name: Build jars and Docker images inside Minikube
+        run: |
+          chmod +x gradlew test-em-all.bash
+          ./gradlew build -x test --no-daemon
+          eval $(minikube docker-env)
+          docker compose build
+          docker images | grep hands-on
+
+      - name: Deploy with Helm
+        run: |
+          for f in kubernetes/helm/components/*; do helm dep up $f > /dev/null; done
+          for f in kubernetes/helm/environments/*; do helm dep up $f > /dev/null; done
+          helm install hands-on-dev-env kubernetes/helm/environments/dev-env -n hands-on --create-namespace
+          kubectl wait --timeout=900s --for=condition=ready pod --all -n hands-on
+          kubectl get pods -n hands-on
+
+      - name: Run test-em-all.bash against Kubernetes
+        run: |
+          if [ "${{ matrix.project }}" = "Chapter17" ]; then
+            echo "$(minikube ip) minikube.me" | sudo tee -a /etc/hosts
+            HOST=minikube.me PORT=443 USE_K8S=true ./test-em-all.bash
+          else
+            HOST=$(minikube ip) PORT=30443 USE_K8S=true ./test-em-all.bash
+          fi
+
+      - name: Diagnostics
+        if: failure()
+        run: |
+          kubectl get pods -A
+          kubectl get events -n hands-on --sort-by=.lastTimestamp | tail -40
+          for d in $(kubectl get deploy -n hands-on -o name); do
+            echo "=== $d"; kubectl logs -n hands-on $d --tail=80 || true
+          done
+
+      - name: Warnings and errors in pod logs
+        if: always()
+        run: |
+          for d in $(kubectl get deploy -n hands-on -o name); do kubectl logs -n hands-on $d 2>/dev/null; done > pods.log || true
+          echo "### ${{ matrix.project }} on Minikube: WARN/ERROR lines" >> $GITHUB_STEP_SUMMARY
+          grep -E " (WARN|ERROR) " pods.log | sed -E 's/^[0-9TZ:.+-]+ +//' | cut -c1-220 | sort | uniq -c | sort -rn | head -40 | tee -a $GITHUB_STEP_SUMMARY || true

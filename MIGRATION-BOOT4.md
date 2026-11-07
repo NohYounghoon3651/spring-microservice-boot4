@@ -109,6 +109,14 @@ spring.cloud.stream.output-bindings: products-out-0;recommendations-out-0;review
 
 헬스 그룹에 쓰는 기여자 이름(`mongo`, `rabbit`, `db`)과 `management.health.rabbit/kafka.enabled`는 바뀌지 않았습니다.
 
+### 3-1. 실행 안정성 보강 (교재 원본에도 있던 타이밍 문제)
+
+전체 시스템 테스트를 여러 구성으로 반복 실행하자, 실행할 때마다 다른 곳에서 간헐적으로 실패하는 지점이 있었습니다. 모두 기동 순서나 비동기 처리 시간 때문이었고, 다음과 같이 보강했습니다.
+
+- **Kafka 헬스체크** (7~20장, 23장 `docker-compose-kafka.yml`): Kafka 컨테이너에 `kafka-topics --list` 헬스체크를 추가했습니다. 의존 서비스는 `condition: service_healthy`로, 브로커가 준비된 뒤에 시작합니다. 전에는 컨테이너가 '시작'만 되면 서비스가 붙었습니다.
+- **메시지 처리 대기** (7~20장, 23장 `test-em-all.bash`의 `testCompositeCreated`): 상품 1뿐 아니라 113(추천 없음), 213(리뷰 없음)의 메시지 처리도 기다립니다. Kafka에서는 컨슈머 그룹 재조정(rebalance) 중에 이 메시지들이 늦게 처리될 수 있습니다.
+- **유레카 등록 대기** (9~15장 `test-em-all.bash`): 헬스체크가 통과한 직후에는 서비스 등록이 아직 끝나지 않았을 수 있습니다. 그래서 등록된 앱 수를 검사하기 전에 최대 60초 동안 기다립니다. 인스턴스가 많은 파티션 구성에서 실패했던 부분입니다.
+
 ## 4. Dockerfile
 
 ```dockerfile

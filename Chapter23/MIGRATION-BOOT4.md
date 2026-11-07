@@ -213,3 +213,10 @@ Jackson 3는 enum을 기본적으로 `toString()`으로 씁니다. 그래서 `/a
 상품 생성 시 이벤트 3개를 병렬로 보낼 때, 첫 전송에서 늦게 만들어지는 바인딩 때문에 Kafka 구성에서 가끔 `Dispatcher has no subscribers` 오류(500)가 났습니다. product-composite 설정에 `spring.cloud.stream.output-bindings: products-out-0;recommendations-out-0;reviews-out-0`을 추가해 바인딩을 기동 시점에 만듭니다.
 
 대상: product-composite 설정 파일
+
+## 36. 실행 안정성 보강 (원본에도 있던 타이밍 문제)
+
+- `docker-compose-kafka.yml`: Kafka 헬스체크 추가, 의존 서비스는 Kafka가 healthy가 된 뒤 시작
+- `test-em-all.bash`: 상품 113·213의 메시지 처리까지 기다리도록 `testCompositeCreated` 보강
+
+자세한 이유는 최상위 `MIGRATION-BOOT4.md`의 3-1절을 참고하세요.
