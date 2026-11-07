@@ -9,6 +9,7 @@
 3. [장별 학습 이슈](https://github.com/NohYounghoon3651/spring-microservice-boot4/issues?q=is%3Aissue+label%3A학습+sort%3Acreated-asc)(#1 = 1장 … #23 = 23장)의 하위 이슈(`개념` · `코드 분석` · `실습` · `심화`)를 순서대로 진행하며 닫습니다. 하위 이슈를 닫을 때마다 상위 이슈의 진행률이 올라갑니다.
 4. 진도는 [마일스톤](https://github.com/NohYounghoon3651/spring-microservice-boot4/milestones)(1부·2부·3부)에서, 장·부별 이슈는 라벨 `chXX` · `1부`/`2부`/`3부`로 걸러 볼 수 있습니다.
 5. 설치 없이 실습하려면 [Codespaces와 컨테이너 이미지](Codespaces와-컨테이너-이미지)를 참고하세요.
+6. 궁금한 점은 [Discussions](https://github.com/NohYounghoon3651/spring-microservice-boot4/discussions)에, 재현되는 실행 오류는 [자주 발생하는 문제](자주-발생하는-문제)를 확인한 뒤 이슈로 남겨 주세요.
 
 ## 목차
 
