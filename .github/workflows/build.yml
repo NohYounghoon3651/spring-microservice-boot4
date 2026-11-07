@@ -52,6 +52,24 @@ jobs:
           chmod +x gradlew
           ./gradlew build --continue --no-daemon
 
+      - name: Test summary
+        if: always()
+        shell: python
+        run: |
+          import glob, os, xml.etree.ElementTree as ET
+          rows, tot = [], [0, 0, 0, 0]
+          for f in sorted(glob.glob("**/build/test-results/test/*.xml", recursive=True)):
+              s = ET.parse(f).getroot()
+              t, fl, e, sk = (int(s.get(k, 0)) for k in ("tests", "failures", "errors", "skipped"))
+              mod = f.split("/build/")[0]
+              rows.append(f"| {mod} | {s.get('name').split('.')[-1]} | {t} | {fl + e} | {sk} |")
+              tot = [a + b for a, b in zip(tot, (t, fl, e, sk))]
+          out = [f"### ${{ matrix.project }}: {tot[0]} tests, {tot[1] + tot[2]} failed, {tot[3]} skipped", "",
+                 "| module | test class | tests | failed | skipped |", "|---|---|---|---|---|"] + rows
+          print("\n".join(out))
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as fh:
+              fh.write("\n".join(out) + "\n")
+
       - name: Upload test reports
         if: failure()
         uses: actions/upload-artifact@v4
