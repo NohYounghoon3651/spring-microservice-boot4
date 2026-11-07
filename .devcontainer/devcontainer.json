@@ -1,7 +1,12 @@
 {
   "name": "Spring Boot 4 microservices (Java 21)",
-  "image": "mcr.microsoft.com/devcontainers/java:1-21-bookworm",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
   "features": {
+    "ghcr.io/devcontainers/features/java:1": {
+      "version": "21",
+      "jdkDistro": "tem",
+      "installGradle": "false"
+    },
     "ghcr.io/devcontainers/features/docker-in-docker:2": {},
     "ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {}
   },
@@ -10,13 +15,29 @@
     "memory": "16gb"
   },
   "postCreateCommand": "sudo apt-get update && sudo apt-get install -y jq && java -version && docker --version",
-  "forwardPorts": [8080, 8443, 8761, 9411, 15672],
+  "forwardPorts": [
+    8080,
+    8443,
+    8761,
+    9411,
+    15672
+  ],
   "portsAttributes": {
-    "8080": { "label": "product-composite / gateway (HTTP)" },
-    "8443": { "label": "gateway (HTTPS)" },
-    "8761": { "label": "Eureka" },
-    "9411": { "label": "Zipkin" },
-    "15672": { "label": "RabbitMQ management" }
+    "8080": {
+      "label": "product-composite / gateway (HTTP)"
+    },
+    "8443": {
+      "label": "gateway (HTTPS)"
+    },
+    "8761": {
+      "label": "Eureka"
+    },
+    "9411": {
+      "label": "Zipkin"
+    },
+    "15672": {
+      "label": "RabbitMQ management"
+    }
   },
   "customizations": {
     "vscode": {
