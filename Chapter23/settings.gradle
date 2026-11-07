@@ -19,7 +19,7 @@ include ':spring-cloud:authorization-server'
 // See MIGRATION-BOOT4.md, "2-5. 의존성 보안 패치".
 // ---------------------------------------------------------------------------
 def securityPatches = [
-    'com.rabbitmq:amqp-client'                                    : '5.33.1',    // spring-rabbit (Boot 4.0.9: 5.27.1)
+    'com.rabbitmq:amqp-client'                                    : '5.37.1',    // spring-rabbit (Boot 4.0.9: 5.27.1)
     'at.yawk.lz4:lz4-java'                                        : '1.11.4',    // kafka-clients
     'org.xerial.snappy:snappy-java'                               : '1.1.10.9',  // kafka-clients
     'com.google.guava:guava'                                      : '33.7.2-jre',// Netflix Eureka (archaius, servo)

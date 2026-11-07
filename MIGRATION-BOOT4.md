@@ -113,7 +113,7 @@ Dependabot 취약점 알림을 켜고 장별 Gradle 의존성을 의존성 그�
 
 | 라이브러리 | Boot 4.0.9 기본 | 패치 버전 | 가져오는 곳 |
 |---|---|---|---|
-| `com.rabbitmq:amqp-client` | 5.27.1 | 5.33.1 | spring-rabbit (RabbitMQ 바인더) |
+| `com.rabbitmq:amqp-client` | 5.27.1 | 5.37.1 | spring-rabbit (RabbitMQ 바인더) |
 | `at.yawk.lz4:lz4-java` | 1.10.1 | 1.11.4 | kafka-clients |
 | `org.xerial.snappy:snappy-java` | 1.1.10.7 | 1.1.10.9 | kafka-clients |
 | `com.google.guava:guava` | 16.0 / 33.0.0-jre | 33.7.2-jre | Netflix Eureka (archaius, servo) |
