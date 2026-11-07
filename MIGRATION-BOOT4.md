@@ -158,13 +158,31 @@ tasks.named('bootBuildImage') {
 - 14장 이후 Zipkin 엔드포인트 키 → `management.tracing.export.zipkin.endpoint`, 추적 모듈 의존성 추가
 - 각 장 테스트 코드의 Jackson 클래스는 `tools.jackson` 패키지
 
-## 7. 검증한 것과 하지 못한 것
+## 7. 검증 결과
 
-모든 장은 저장소의 GitHub Actions 워크플로(`.github/workflows/build.yml`)로 자바 21 + Docker 환경에서 `./gradlew build`(Testcontainers 테스트 포함)를 실행해 검증합니다. 그 전에 오프라인으로 다음도 확인했습니다.
+모든 검증은 이 저장소의 GitHub Actions 워크플로로 자동 실행됩니다(자바 21, Docker, `ubuntu-latest` 러너).
 
-- 변경된 자바 파일 418개 전부 `javac` 구문 검사 통과
-- 자바 import 4,239개(스프링, Jackson 3, Testcontainers, Resilience4j, Micrometer, Brave 네임스페이스)를 대상 버전의 실제 클래스 목록과 대조 — 미해결 0개 (같은 검사를 원본 코드에 돌리면 옛 패키지 19종이 잡힘)
-- YAML 파일 567개 파싱 오류 없음
-- 바뀐 메서드 시그니처(예: `HttpHeaders`, `CompositeReactiveHealthContributor.fromMap`, `ReactiveIndexOperations.createIndex`, 인가 서버 `jwtDecoder`)를 대상 버전 소스에서 확인
+**`.github/workflows/build.yml`**
 
-처음 빌드할 때는 각 장에서 `./gradlew build`로 확인해 주세요. 남은 위험 요소는 실행해 봐야 드러나는 것들입니다. 예를 들어 유레카 서버 테스트의 `/eureka/apps` 응답 문자열 비교, 13장 Resilience4j 2.4.0의 동작, Spring Cloud Stream 5와 Jackson 3 조합에서의 메시지 형식 같은 부분입니다.
+| 검증 | 범위 | 결과 |
+|---|---|---|
+| 빌드 + 단위·통합 테스트 (`./gradlew build`, Testcontainers 포함) | 19개 프로젝트 | 테스트 933개 통과, 실패·건너뜀 0 |
+| 전체 시스템 테스트 `test-em-all.bash` (docker compose, RabbitMQ) | 3~23장 18개 | 검사 877개 통과 |
+| 전체 시스템 테스트 — Kafka 구성 (`docker-compose-kafka.yml`) | 7~20장, 23장 | 14개 장 통과 |
+| 전체 시스템 테스트 — 파티션 구성 (`docker-compose-partitions.yml`) | 7~20장, 23장 | 14개 장 통과 |
+| 23장 네이티브 이미지 (GraalVM 25 빌드팩) + 시스템 테스트 | `docker-compose-native.yml`, `docker-compose-partitions-native.yml` | 통과 |
+
+**`.github/workflows/kubernetes.yml`**
+
+| 검증 | 범위 | 결과 |
+|---|---|---|
+| 헬름 차트 `helm lint` + `helm template` + `kubeconform` 스키마 검증 | 16~23장 헬름 환경 20개, 리소스 588개 | 모두 유효, 건너뜀 0 (Istio·cert-manager CRD 포함) |
+| minikube 배포 + `test-em-all.bash` | 16장 (NodePort, Spring Cloud 인프라) | 검사 68개 통과 |
+| minikube 배포 + `test-em-all.bash` | 17장 (Ingress, cert-manager) | 검사 65개 통과 |
+| minikube + Istio 1.31 배포 + `test-em-all.bash` | 18·19·20·23장 (사이드카 주입, Istio 인그레스 게이트웨이) | 장마다 검사 65~66개 통과 |
+
+컴파일 경고 가운데 사용 중단(deprecated) API 경고는 0건이고, Gradle 사용 중단 기능 경고도 0건입니다. 실행 로그에 남는 WARN은 의도된 것이거나 무해합니다. 테스트가 일부러 일으키는 오류(타임아웃, 폴백), 기동 순서에서 오는 일시적 경고, 원본에도 있던 경고(`withDefaultPasswordEncoder`), springdoc 3의 안내 메시지가 여기에 해당합니다. Micrometer의 "MeterFilter is being configured after a Meter has been registered" 경고도 14장 이후 장마다 한 번씩 나오는데, 정보성 경고라 동작에 영향은 없습니다.
+
+**검증 범위 밖**: 19장 이후의 EFK 로깅 스택(Elasticsearch·Fluentd·Kibana) 설치와, 18장 이후의 무중단 배포·라우팅 실습 스크립트(`kubernetes/routing-tests`, `resilience-tests`)는 CI에서 실행하지 않았습니다. 이 실습들이 쓰는 애플리케이션과 헬름 차트는 위 검증에 포함되어 있습니다.
+
+변환 초기에는 오프라인으로도 확인했습니다. 변경된 자바 파일의 `javac` 구문 검사, import 4,239개를 대상 버전의 실제 클래스 목록과 대조, YAML 567개 파싱 검사입니다.
