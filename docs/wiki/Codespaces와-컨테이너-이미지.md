@@ -19,11 +19,11 @@ docker compose build
 
 ## 미리 빌드된 이미지 사용하기
 
-릴리스가 나올 때마다 장별 서비스 이미지가 GitHub Container Registry에 올라갑니다.
+릴리스가 나올 때마다 장별 서비스 이미지가 GitHub Container Registry에 올라갑니다. 태그는 릴리스 버전(예: `1.0.2`)과 가장 최근 릴리스를 가리키는 `latest`입니다. 버전 목록은 [릴리스](https://github.com/NohYounghoon3651/spring-microservice-boot4/releases)에서 볼 수 있습니다.
 
 ```text
-ghcr.io/nohyounghoon3651/spring-microservice-boot4/ch13-product-service:1.0.0
-ghcr.io/nohyounghoon3651/spring-microservice-boot4/ch13-product-composite-service:1.0.0
+ghcr.io/nohyounghoon3651/spring-microservice-boot4/ch13-product-service:latest
+ghcr.io/nohyounghoon3651/spring-microservice-boot4/ch13-product-composite-service:latest
 …
 ```
 
@@ -31,7 +31,9 @@ ghcr.io/nohyounghoon3651/spring-microservice-boot4/ch13-product-composite-servic
 
 ```bash
 cd Chapter13
-CH=ch13; VER=1.0.0; REPO=ghcr.io/nohyounghoon3651/spring-microservice-boot4
+CH=ch13
+VER=latest   # 특정 버전은 VER=1.0.2처럼
+REPO=ghcr.io/nohyounghoon3651/spring-microservice-boot4
 for img in $(docker compose config --images | grep '^hands-on/'); do
   name=${img#hands-on/}
   docker pull $REPO/$CH-$name:$VER && docker tag $REPO/$CH-$name:$VER $img
