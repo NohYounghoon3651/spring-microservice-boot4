@@ -38,7 +38,7 @@ final class KeyGeneratorUtils {
   static SecretKey generateSecretKey() {
     SecretKey hmacKey;
     try {
-      hmacKey = KeyGenerator.getInstance("HmacSha256").generateKey();
+      hmacKey = KeyGenerator.getInstance("HmacSHA256").generateKey();
     } catch (Exception ex) {
       throw new IllegalStateException(ex);
     }

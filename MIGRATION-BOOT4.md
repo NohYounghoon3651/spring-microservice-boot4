@@ -97,6 +97,15 @@ spring.cloud.stream.output-bindings: products-out-0;recommendations-out-0;review
 
 이 밖에, Boot 4는 liveness/readiness 프로브가 기본으로 켜져 있어 `/actuator/health` 응답에 `"groups":["liveness","readiness"]`가 추가됩니다. 응답 전체를 문자열로 비교하던 유레카 서버 테스트는 `"status":"UP"` 포함 여부만 확인하도록 고쳤습니다.
 
+### 2-4. CodeQL 알림 정리 (동작 변화 없음)
+
+GitHub CodeQL 분석에서 나온 알림 가운데 코드를 고치는 편이 나은 것만 반영했습니다(#206).
+
+- 11~23장 authorization-server의 `KeyGeneratorUtils`: `KeyGenerator.getInstance("HmacSha256")` → `"HmacSHA256"`. 자바의 알고리즘 이름은 대소문자를 구분하지 않아 같은 HMAC-SHA256이지만, CodeQL은 표준 표기만 안전한 알고리즘으로 인식합니다.
+- 3·4·5장 product-composite의 `ProductCompositeIntegration`: `getProduct`·`getRecommendations`·`getReviews`에 `@Override` 추가(6장부터는 교재에도 있음).
+
+CSRF 해제, `withDefaultPasswordEncoder` 같은 나머지 알림은 교재 예제의 의도라 그대로 두었습니다. 기준은 [CONTRIBUTING.md](CONTRIBUTING.md#codeql-알림-처리-기준)에 있습니다.
+
 ## 3. 설정 (application.yml, config-repo, docker-compose, 헬름)
 
 | 원본 | 변경 후 |

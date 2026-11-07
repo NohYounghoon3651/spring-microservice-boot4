@@ -77,6 +77,20 @@ git push -u origin release/1.1.0      # main 대상 PR, 병합 후 v1.1.0 태그
 | Publish container images (`images.yml`) | 릴리스 발행 | 장별 서비스 이미지를 `ghcr.io/nohyounghoon3651/spring-microservice-boot4/chXX-<서비스>:<버전>`·`latest`로 게시 |
 | Dependabot (`dependabot.yml`) | 매월 | `develop` 대상 PR: Actions(`⬆️ ci(deps)`), Gradle 패치 버전(`⬆️ chore(deps)`) |
 
+## CodeQL 알림 처리 기준
+
+[Code scanning](https://github.com/NohYounghoon3651/spring-microservice-boot4/security/code-scanning)에 알림이 뜨면 아래 기준으로 처리합니다. 같은 코드가 여러 장에 복사되어 있어도 CodeQL은 대표 파일 하나만 표시하므로, 고칠 때는 같은 코드가 있는 모든 장을 함께 고칩니다.
+
+| 알림 | 처리 | 이유 |
+|---|---|---|
+| Disabled Spring CSRF protection (게이트웨이, 유레카, 컨피그 서버) | 닫기: Won't fix | 브라우저 세션 없이 HTTP Basic·OAuth2 토큰으로 서비스끼리 호출하므로 CSRF가 해당되지 않음. 켜면 유레카 등록, `/encrypt`·`/decrypt` 실습이 동작하지 않음 |
+| Disabled Spring CSRF protection (`TestSecurityConfig`) | 닫기: Used in tests | 테스트 전용 설정 |
+| Deprecated `withDefaultPasswordEncoder` | 닫기: Won't fix | 교재의 데모 사용자. 코드 주석에 운영 사용 금지 명시 |
+| Constant interface anti-pattern (`MySqlTestBase`) | 닫기: Used in tests | Testcontainers 컨테이너를 테스트끼리 공유하는 베이스 클래스 |
+| 위험한 암호화 알고리즘, `@Override` 누락 등 동작 변화 없이 고칠 수 있는 것 | 코드 수정 | 표준 표기·어노테이션으로 교재 의도를 바꾸지 않고 해결 |
+
+새로운 종류의 알림은 이슈로 남겨 판단한 뒤 이 표에 추가해 주세요.
+
 ## 이슈
 
 - **장별 학습 이슈**: #1~#23. 각 장은 `개념` · `코드 분석` · `실습` · `심화` 하위 이슈로 나뉘어 있습니다.
