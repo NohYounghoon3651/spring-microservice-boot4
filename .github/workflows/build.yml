@@ -235,6 +235,19 @@ jobs:
         run: |
           docker compose build
           HOST=localhost PORT=8443 HEALTH_URL=https://localhost:8443 USE_K8S=false ./test-em-all.bash start stop
+      - name: Diagnostics (native)
+        if: failure()
+        env:
+          COMPOSE_FILE: docker-compose-native.yml
+        run: |
+          set +e
+          echo "--- health"
+          docker compose exec -T auth-server wget -qO - http://product-composite:4004/actuator/health
+          echo; echo "--- circuitbreakerevents"
+          docker compose exec -T auth-server wget -qO - http://product-composite:4004/actuator/circuitbreakerevents | head -c 3000
+          echo; echo "--- product-composite log"
+          docker compose logs --no-color product-composite | head -150
+
       - name: Run test-em-all.bash (native, partitions)
         env:
           COMPOSE_FILE: docker-compose-partitions-native.yml

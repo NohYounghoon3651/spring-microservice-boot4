@@ -15,7 +15,7 @@ services:
       mongodb:
         condition: service_healthy
       kafka:
-        condition: service_started
+        condition: service_healthy
 
   product-p1:
     build: microservices/product-service
@@ -33,7 +33,7 @@ services:
       mongodb:
         condition: service_healthy
       kafka:
-        condition: service_started
+        condition: service_healthy
 
   recommendation:
     build: microservices/recommendation-service
@@ -51,7 +51,7 @@ services:
       mongodb:
         condition: service_healthy
       kafka:
-        condition: service_started
+        condition: service_healthy
 
   recommendation-p1:
     build: microservices/recommendation-service
@@ -69,7 +69,7 @@ services:
       mongodb:
         condition: service_healthy
       kafka:
-        condition: service_started
+        condition: service_healthy
 
   review:
     build: microservices/review-service
@@ -86,7 +86,7 @@ services:
       mysql:
         condition: service_healthy
       kafka:
-        condition: service_started
+        condition: service_healthy
 
   review-p1:
     build: microservices/review-service
@@ -103,7 +103,7 @@ services:
       mysql:
         condition: service_healthy
       kafka:
-        condition: service_started
+        condition: service_healthy
 
   product-composite:
     build: microservices/product-composite-service
@@ -116,7 +116,7 @@ services:
       - $PWD/config-repo:/config-repo
     depends_on:
       kafka:
-        condition: service_started
+        condition: service_healthy
       auth-server:
         condition: service_healthy
 
@@ -166,6 +166,12 @@ services:
       - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
     depends_on:
       - zookeeper
+    healthcheck:
+      test: ["CMD-SHELL", "kafka-topics --bootstrap-server localhost:9092 --list > /dev/null 2>&1"]
+      interval: 5s
+      timeout: 10s
+      retries: 30
+      start_period: 10s
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.9.0
