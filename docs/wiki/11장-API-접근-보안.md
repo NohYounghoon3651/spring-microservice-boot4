@@ -140,7 +140,7 @@ product-composite(리소스 서버)의 보안 설정에서 경로·메서드별�
 
 </details>
 
-## 학습 체크리스트
+## 학습 이슈
 
 학습 이슈 [#11](https://github.com/NohYounghoon3651/spring-microservice-boot4/issues/11)의 하위 이슈(개념 · 코드 분석 · 실습 · 심화)를 순서대로 진행하며 닫아 가세요. 하위 이슈를 닫을 때마다 #11의 진행률이 올라갑니다.
 

@@ -30,6 +30,6 @@ jobs:
           git add -A
           git status --short | head -40
           if git diff --cached --quiet; then echo "Wiki is up to date"; exit 0; fi
-          git commit -m "Update wiki from docs/wiki (${GITHUB_SHA::7})"
+          git commit -m "📝 docs: update wiki from docs/wiki (${GITHUB_SHA::7})"
           git push
           echo "Wiki after: $(ls | wc -l) files"

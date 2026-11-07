@@ -90,7 +90,7 @@ product-composite의 `/openapi/swagger-ui.html`(설정의 `springdoc.swagger-ui.
 
 </details>
 
-## 학습 체크리스트
+## 학습 이슈
 
 학습 이슈 [#5](https://github.com/NohYounghoon3651/spring-microservice-boot4/issues/5)의 하위 이슈(개념 · 코드 분석 · 실습 · 심화)를 순서대로 진행하며 닫아 가세요. 하위 이슈를 닫을 때마다 #5의 진행률이 올라갑니다.
 

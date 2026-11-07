@@ -1,6 +1,6 @@
 name: 실행 오류
 description: 빌드·테스트·배포가 실패할 때 제보합니다
-title: "[오류] "
+title: "🐛 [오류] "
 labels: ["실행 오류"]
 body:
   - type: markdown
