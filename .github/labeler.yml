@@ -82,7 +82,7 @@ ch23:
     - 'Chapter23/**'
 작업:
 - changed-files:
-  - any-glob-to-any-file: ['.github/**', '.devcontainer/**']
+  - any-glob-to-any-file: ['.github/**', '.devcontainer/**', 'tools/**']
 documentation:
 - changed-files:
   - any-glob-to-any-file: ['docs/**', '**/*.md']

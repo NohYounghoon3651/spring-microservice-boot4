@@ -3,10 +3,10 @@ name: CodeQL
 on:
   push:
     branches: [main, develop]
-    paths-ignore: ['**/*.md', 'docs/**']
+    paths-ignore: ['**/*.md', 'docs/**', 'tools/**']
   pull_request:
     branches: [main, develop]
-    paths-ignore: ['**/*.md', 'docs/**']
+    paths-ignore: ['**/*.md', 'docs/**', 'tools/**']
   schedule:
     - cron: '30 19 * * 2'   # every Wednesday 04:30 KST
   workflow_dispatch:
@@ -16,17 +16,59 @@ permissions:
   security-events: write
 
 jobs:
+  # Every chapter is analyzed on its own. The chapters reuse the same package and class
+  # names, so a single analysis of the whole repository keeps only one copy of each class
+  # (89 of ~1,170 Java files) and misses the code of later chapters.
   analyze:
-    name: Analyze Java
+    name: Analyze ${{ matrix.project }}
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        project:
+          - Chapter03/1-spring-init
+          - Chapter03/2-basic-rest-services
+          - Chapter04
+          - Chapter05
+          - Chapter06
+          - Chapter07
+          - Chapter09
+          - Chapter10
+          - Chapter11
+          - Chapter12
+          - Chapter13
+          - Chapter14
+          - Chapter15
+          - Chapter16
+          - Chapter17
+          - Chapter18
+          - Chapter19
+          - Chapter20
+          - Chapter23
     steps:
       - uses: actions/checkout@v7
       - uses: github/codeql-action/init@v4
         with:
           languages: java-kotlin
           build-mode: none
-          queries: security-and-quality
+          source-root: ${{ matrix.project }}
+          # Rules excluded on purpose (see CONTRIBUTING.md, "CodeQL 알림 처리 기준"):
+          # - spring-disabled-csrf-protection: the textbook's gateway, Eureka and config server are
+          #   called service-to-service with HTTP Basic / OAuth2 tokens, without browser sessions
+          # - deprecated-call: the textbook's demo users (withDefaultPasswordEncoder); compiler
+          #   deprecation warnings are already kept at zero by the build
+          # - constants-only-interface: Testcontainers base classes shared by the tests
+          config: |
+            queries:
+              - uses: security-and-quality
+            query-filters:
+              - exclude:
+                  id: java/spring-disabled-csrf-protection
+              - exclude:
+                  id: java/deprecated-call
+              - exclude:
+                  id: java/constants-only-interface
       - uses: github/codeql-action/analyze@v4
         with:
-          category: /language:java-kotlin
+          category: /language:java-kotlin/project:${{ matrix.project }}
