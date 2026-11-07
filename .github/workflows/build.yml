@@ -2,8 +2,9 @@ name: Build all chapters (Spring Boot 4.0.9 / Java 21)
 
 on:
   push:
-    branches: [main, develop, 'release/**', 'hotfix/**']
-    paths-ignore: ['**/*.md', 'docs/**', '.github/ISSUE_TEMPLATE/**', '.github/workflows/wiki.yml', '.github/workflows/labeler.yml', '.github/workflows/codeql.yml', '.github/workflows/images.yml', '.github/workflows/devcontainer.yml', '.github/labeler.yml', '.github/dependabot.yml', '.devcontainer/**']
+    # release/* and hotfix/* are verified by their pull request into main (no duplicate push runs)
+    branches: [main, develop]
+    paths-ignore: ['**/*.md', 'docs/**', '.github/ISSUE_TEMPLATE/**', '.github/workflows/wiki.yml', '.github/workflows/labeler.yml', '.github/workflows/codeql.yml', '.github/workflows/images.yml', '.github/workflows/devcontainer.yml', '.github/workflows/dependency-submission.yml', '.github/labeler.yml', '.github/dependabot.yml', '.devcontainer/**', 'tools/**']
   pull_request:
   schedule:
     - cron: '0 18 * * 0'   # every Monday 03:00 KST
@@ -25,7 +26,7 @@ jobs:
           if [ "${{ github.event_name }}" != "pull_request" ]; then echo "code=true" >> $GITHUB_OUTPUT; exit 0; fi
           files=$(git -c core.quotePath=false diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }})
           echo "$files"
-          if echo "$files" | grep -vE '\.md$|^docs/|^\.github/ISSUE_TEMPLATE/|^\.github/workflows/(wiki|labeler|codeql|images|devcontainer)\.yml$|^\.github/labeler\.yml$|^\.github/dependabot\.yml$|^\.devcontainer/' | grep -q .; then
+          if echo "$files" | grep -vE '\.md$|^docs/|^\.github/ISSUE_TEMPLATE/|^\.github/workflows/(wiki|labeler|codeql|images|devcontainer|dependency-submission)\.yml$|^\.github/labeler\.yml$|^\.github/dependabot\.yml$|^\.devcontainer/|^tools/' | grep -q .; then
             echo "code=true" >> $GITHUB_OUTPUT
           else
             echo "code=false" >> $GITHUB_OUTPUT
@@ -292,10 +293,25 @@ jobs:
           grep -E " (WARN|ERROR) " compose.log | sed -E 's/^[^|]*\| *[0-9TZ:.+-]+ +//' | cut -c1-220 | sort | uniq -c | sort -rn | head -40 | tee -a $GITHUB_STEP_SUMMARY || true
 
   # Single status to require in branch protection: fails if any job above did not succeed.
+  # The generated wiki pages (docs/wiki) must match the code: regenerate them and compare.
+  wiki:
+    name: Wiki up to date
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Regenerate docs/wiki with tools/wiki/learning.py
+        run: |
+          python3 tools/wiki/learning.py
+          if ! git diff --quiet -- docs/wiki; then
+            git -c core.quotePath=false diff --stat -- docs/wiki
+            echo "::error::docs/wiki is out of date. Run 'python3 tools/wiki/learning.py' and commit the result."
+            exit 1
+          fi
+
   ci-result:
     name: CI result
     if: always()
-    needs: [changes, build, e2e, e2e-chapter03, e2e-variants, e2e-native]
+    needs: [changes, wiki, build, e2e, e2e-chapter03, e2e-variants, e2e-native]
     runs-on: ubuntu-latest
     steps:
       - name: Check all jobs

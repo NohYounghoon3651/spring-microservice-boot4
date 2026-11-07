@@ -2,7 +2,7 @@ name: Publish container images
 
 # Builds the Docker images of every chapter and publishes them to GitHub Container Registry,
 # so learners can pull them instead of building, e.g.
-#   docker pull ghcr.io/nohyounghoon3651/spring-microservice-boot4/ch13-product-service:1.0.0
+#   docker pull ghcr.io/nohyounghoon3651/spring-microservice-boot4/ch13-product-service:latest   (or :<release version>)
 on:
   release:
     types: [published]

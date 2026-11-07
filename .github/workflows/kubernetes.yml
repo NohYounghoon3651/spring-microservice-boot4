@@ -2,11 +2,11 @@ name: Kubernetes (Helm charts and deployment to Minikube)
 
 on:
   push:
-    branches: [main, 'release/**', 'hotfix/**']
-    paths-ignore: ['**/*.md', 'docs/**', '.github/ISSUE_TEMPLATE/**', '.github/workflows/wiki.yml', '.github/workflows/labeler.yml', '.github/workflows/codeql.yml', '.github/workflows/images.yml', '.github/workflows/devcontainer.yml', '.github/labeler.yml', '.github/dependabot.yml', '.devcontainer/**']
+    branches: [main]   # release/* and hotfix/* are verified by their pull request into main
+    paths-ignore: ['**/*.md', 'docs/**', '.github/ISSUE_TEMPLATE/**', '.github/workflows/wiki.yml', '.github/workflows/labeler.yml', '.github/workflows/codeql.yml', '.github/workflows/images.yml', '.github/workflows/devcontainer.yml', '.github/workflows/dependency-submission.yml', '.github/labeler.yml', '.github/dependabot.yml', '.devcontainer/**', 'tools/**']
   pull_request:
     branches: [main]   # release/* and hotfix/* pull requests into main
-    paths-ignore: ['**/*.md', 'docs/**', '.github/ISSUE_TEMPLATE/**', '.github/workflows/wiki.yml', '.github/workflows/labeler.yml', '.github/workflows/codeql.yml', '.github/workflows/images.yml', '.github/workflows/devcontainer.yml', '.github/labeler.yml', '.github/dependabot.yml', '.devcontainer/**']
+    paths-ignore: ['**/*.md', 'docs/**', '.github/ISSUE_TEMPLATE/**', '.github/workflows/wiki.yml', '.github/workflows/labeler.yml', '.github/workflows/codeql.yml', '.github/workflows/images.yml', '.github/workflows/devcontainer.yml', '.github/workflows/dependency-submission.yml', '.github/labeler.yml', '.github/dependabot.yml', '.devcontainer/**', 'tools/**']
   schedule:
     - cron: '0 20 * * 0'   # every Monday 05:00 KST
   workflow_dispatch:

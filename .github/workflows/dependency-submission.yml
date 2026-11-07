@@ -1,0 +1,50 @@
+name: Dependency submission
+
+# Gradle dependencies cannot be read from build.gradle alone, so each chapter resolves its
+# dependencies and submits them to the dependency graph. Dependabot alerts use this graph.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    paths: ['.github/workflows/dependency-submission.yml']   # test changes to this workflow
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  submit:
+    name: Submit ${{ matrix.project }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        project:
+          - Chapter03/1-spring-init
+          - Chapter03/2-basic-rest-services
+          - Chapter04
+          - Chapter05
+          - Chapter06
+          - Chapter07
+          - Chapter09
+          - Chapter10
+          - Chapter11
+          - Chapter12
+          - Chapter13
+          - Chapter14
+          - Chapter15
+          - Chapter16
+          - Chapter17
+          - Chapter18
+          - Chapter19
+          - Chapter20
+          - Chapter23
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/dependency-submission@v6
+        with:
+          build-root-directory: ${{ matrix.project }}
