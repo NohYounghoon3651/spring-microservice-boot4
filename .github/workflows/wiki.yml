@@ -22,11 +22,14 @@ jobs:
             echo "::error::Wiki is not initialized. Open the Wiki tab, click 'Create the first page' and save, then re-run this workflow."
             exit 1
           fi
+          echo "Wiki before: $(ls wiki | wc -l) files"; git -C wiki log --oneline -3
           rsync -a --delete --exclude .git docs/wiki/ wiki/
           cd wiki
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
+          git status --short | head -40
           if git diff --cached --quiet; then echo "Wiki is up to date"; exit 0; fi
           git commit -m "Update wiki from docs/wiki (${GITHUB_SHA::7})"
           git push
+          echo "Wiki after: $(ls | wc -l) files"
