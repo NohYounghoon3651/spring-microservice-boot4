@@ -17,8 +17,9 @@ permissions:
 
 jobs:
   # Every chapter is analyzed on its own. The chapters reuse the same package and class
-  # names, so a single analysis of the whole repository keeps only one copy of each class
-  # (89 of ~1,170 Java files) and misses the code of later chapters.
+  # names, and the Java extractor reads the whole checkout and keeps only one copy of each
+  # class (89 of ~1,170 Java files), so later chapters were never analyzed. Each job therefore
+  # checks out only its own chapter (sparse checkout); source-root alone does not limit it.
   analyze:
     name: Analyze ${{ matrix.project }}
     runs-on: ubuntu-latest
@@ -48,6 +49,12 @@ jobs:
           - Chapter23
     steps:
       - uses: actions/checkout@v7
+        with:
+          sparse-checkout: ${{ matrix.project }}
+      - name: Show the files to analyze
+        run: |
+          echo "Java files in the checkout: $(find . -name '*.java' -not -path './.git/*' | wc -l)"
+          ls
       - uses: github/codeql-action/init@v4
         with:
           languages: java-kotlin
