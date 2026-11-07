@@ -160,7 +160,7 @@ jobs:
       - name: Install Istio and add-ons
         run: |
           cd $RUNNER_TEMP
-          curl -sSL https://istio.io/downloadIstio | sh -
+          curl -sSL https://istio.io/downloadIstio | ISTIO_VERSION=1.31.4 sh -
           ISTIO_DIR=$(ls -d $RUNNER_TEMP/istio-*)
           echo "ISTIO_DIR=$ISTIO_DIR" >> $GITHUB_ENV
           sudo install $ISTIO_DIR/bin/istioctl /usr/local/bin/istioctl
@@ -171,6 +171,7 @@ jobs:
             --set meshConfig.accessLogEncoding=JSON \
             --set values.pilot.env.PILOT_JWT_PUB_KEY_REFRESH_INTERVAL=15s \
             -f kubernetes/istio-tracing.yml
+          kubectl apply -n istio-system -f kubernetes/istio-telemetry.yml
           for a in kiali jaeger prometheus grafana; do kubectl apply -n istio-system -f $ISTIO_DIR/samples/addons/$a.yaml; done
           kubectl -n istio-system wait --timeout=600s --for=condition=available deployment --all
           for f in kubernetes/helm/components/*; do helm dep up $f > /dev/null; done
