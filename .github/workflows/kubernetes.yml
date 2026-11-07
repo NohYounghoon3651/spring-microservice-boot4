@@ -119,3 +119,105 @@ jobs:
           for d in $(kubectl get deploy -n hands-on -o name); do kubectl logs -n hands-on $d 2>/dev/null; done > pods.log || true
           echo "### ${{ matrix.project }} on Minikube: WARN/ERROR lines" >> $GITHUB_STEP_SUMMARY
           grep -E " (WARN|ERROR) " pods.log | sed -E 's/^[0-9TZ:.+-]+ +//' | cut -c1-220 | sort | uniq -c | sort -rn | head -40 | tee -a $GITHUB_STEP_SUMMARY || true
+
+  # Chapters with Istio: install Istio and its add-ons as in the book, deploy dev-env with sidecar
+  # injection and run test-em-all.bash through the Istio ingress gateway.
+  minikube-istio:
+    name: minikube+istio ${{ matrix.project }}
+    needs: helm-validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        project: [Chapter18, Chapter19, Chapter20, Chapter23]
+    defaults:
+      run:
+        working-directory: ${{ matrix.project }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v4
+      - uses: azure/setup-helm@v4
+
+      - name: Start Minikube
+        run: |
+          if ! command -v minikube; then
+            curl -sSLo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+            sudo install minikube /usr/local/bin/minikube
+          fi
+          minikube start --driver=docker --container-runtime=docker --cpus=4 --memory=13g
+
+      - name: Install cert-manager
+        run: |
+          helm repo add jetstack https://charts.jetstack.io
+          helm install cert-manager jetstack/cert-manager --create-namespace --namespace cert-manager \
+            --set crds.enabled=true --wait --timeout 10m
+
+      - name: Install Istio and add-ons
+        run: |
+          cd $RUNNER_TEMP
+          curl -sSL https://istio.io/downloadIstio | sh -
+          ISTIO_DIR=$(ls -d $RUNNER_TEMP/istio-*)
+          echo "ISTIO_DIR=$ISTIO_DIR" >> $GITHUB_ENV
+          sudo install $ISTIO_DIR/bin/istioctl /usr/local/bin/istioctl
+          cd $GITHUB_WORKSPACE/${{ matrix.project }}
+          istioctl install --skip-confirmation \
+            --set profile=demo \
+            --set meshConfig.accessLogFile=/dev/stdout \
+            --set meshConfig.accessLogEncoding=JSON \
+            --set values.pilot.env.PILOT_JWT_PUB_KEY_REFRESH_INTERVAL=15s \
+            -f kubernetes/istio-tracing.yml
+          for a in kiali jaeger prometheus grafana; do kubectl apply -n istio-system -f $ISTIO_DIR/samples/addons/$a.yaml; done
+          kubectl -n istio-system wait --timeout=600s --for=condition=available deployment --all
+          for f in kubernetes/helm/components/*; do helm dep up $f > /dev/null; done
+          for f in kubernetes/helm/environments/*; do helm dep up $f > /dev/null; done
+          helm upgrade --install istio-hands-on-addons kubernetes/helm/environments/istio-system -n istio-system --wait
+
+      - name: Expose the Istio ingress gateway (minikube tunnel)
+        run: |
+          nohup minikube tunnel > $RUNNER_TEMP/tunnel.log 2>&1 &
+          for i in $(seq 1 60); do
+            INGRESS_IP=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+            [ -n "$INGRESS_IP" ] && break; sleep 5
+          done
+          echo "INGRESS_IP=$INGRESS_IP"
+          echo "$INGRESS_IP minikube.me health.minikube.me grafana.minikube.me kiali.minikube.me prometheus.minikube.me tracing.minikube.me" | sudo tee -a /etc/hosts
+
+      - name: Build jars and Docker images inside Minikube
+        run: |
+          chmod +x gradlew test-em-all.bash
+          ./gradlew build -x test --no-daemon
+          eval $(minikube docker-env)
+          docker compose build
+
+      - name: Deploy dev-env with Helm
+        run: |
+          kubectl apply -f kubernetes/hands-on-namespace.yml
+          helm install hands-on-dev-env kubernetes/helm/environments/dev-env -n hands-on
+          kubectl wait --timeout=900s --for=condition=ready pod --all -n hands-on
+          kubectl get pods -n hands-on
+
+      - name: Run test-em-all.bash through Istio
+        run: ./test-em-all.bash
+
+      - name: Diagnostics
+        if: failure()
+        run: |
+          kubectl get pods -A
+          kubectl get gateway,virtualservice,destinationrule,peerauthentication,requestauthentication,authorizationpolicy -A
+          kubectl get events -n hands-on --sort-by=.lastTimestamp | tail -40
+          for d in $(kubectl get deploy -n hands-on -o name); do
+            echo "=== $d"; kubectl logs -n hands-on $d -c $(basename $d) --tail=60 2>/dev/null || kubectl logs -n hands-on $d --tail=60 || true
+          done
+          tail -20 $RUNNER_TEMP/tunnel.log || true
+
+      - name: Warnings and errors in pod logs
+        if: always()
+        run: |
+          for d in $(kubectl get deploy -n hands-on -o name); do kubectl logs -n hands-on $d -c $(basename $d) 2>/dev/null; done > pods.log || true
+          echo "### ${{ matrix.project }} on Minikube + Istio: WARN/ERROR lines" >> $GITHUB_STEP_SUMMARY
+          grep -E " (WARN|ERROR) " pods.log | sed -E 's/^[0-9TZ:.+-]+ +//' | cut -c1-220 | sort | uniq -c | sort -rn | head -40 | tee -a $GITHUB_STEP_SUMMARY || true
