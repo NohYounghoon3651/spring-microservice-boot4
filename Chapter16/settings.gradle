@@ -13,3 +13,49 @@ include ':microservices:product-composite-service'
 include ':spring-cloud:gateway'
 include ':spring-cloud:authorization-server'
 include ':spring-cloud:config-server'
+
+// ---------------------------------------------------------------------------
+// Security patches (Dependabot alerts). Spring Boot stays at 4.0.9; only the
+// vulnerable transitive libraries are raised to their patched versions.
+// See MIGRATION-BOOT4.md, "2-5. 의존성 보안 패치".
+// ---------------------------------------------------------------------------
+def securityPatches = [
+    'com.rabbitmq:amqp-client'                                    : '5.33.1',    // spring-rabbit (Boot 4.0.9: 5.27.1)
+    'at.yawk.lz4:lz4-java'                                        : '1.11.4',    // kafka-clients
+    'org.xerial.snappy:snappy-java'                               : '1.1.10.9',  // kafka-clients
+    'com.google.guava:guava'                                      : '33.7.2-jre',// Netflix Eureka (archaius, servo)
+    'org.apache.httpcomponents:httpclient'                        : '4.5.14',    // Netflix Eureka
+    'org.apache.httpcomponents.client5:httpclient5'               : '5.6.3',
+    'org.apache.httpcomponents.core5:httpcore5'                   : '5.4.3',
+    'org.apache.httpcomponents.core5:httpcore5-h2'                : '5.4.3',
+    'org.apache.commons:commons-lang3'                            : '3.20.0',    // Spring Boot Gradle plugin (buildpacks)
+    'io.opentelemetry:opentelemetry-api'                          : '1.67.0',
+    'io.opentelemetry:opentelemetry-common'                       : '1.67.0',
+    'io.opentelemetry:opentelemetry-context'                      : '1.67.0',
+    'io.opentelemetry:opentelemetry-sdk'                          : '1.67.0',
+    'io.opentelemetry:opentelemetry-sdk-common'                   : '1.67.0',
+    'io.opentelemetry:opentelemetry-sdk-trace'                    : '1.67.0',
+    'io.opentelemetry:opentelemetry-sdk-metrics'                  : '1.67.0',
+    'io.opentelemetry:opentelemetry-sdk-logs'                     : '1.67.0',
+    'io.opentelemetry:opentelemetry-sdk-extension-autoconfigure-spi': '1.67.0',
+    'io.opentelemetry:opentelemetry-exporter-common'              : '1.67.0',
+    'io.opentelemetry:opentelemetry-extension-trace-propagators'  : '1.67.0',
+    'io.opentelemetry:opentelemetry-exporter-zipkin'              : '1.64.0',    // last release of the Zipkin exporter
+]
+gradle.beforeProject { project ->
+    // Application classpaths: explicit versions win over the Spring Boot and Spring Cloud BOMs
+    project.pluginManager.withPlugin('io.spring.dependency-management') {
+        project.dependencyManagement {
+            dependencies {
+                securityPatches.each { ga, v -> dependency "${ga}:${v}" }
+            }
+        }
+    }
+    // Build script classpath (Spring Boot Gradle plugin and its buildpack support)
+    project.buildscript.configurations.configureEach {
+        resolutionStrategy.eachDependency { details ->
+            def v = securityPatches["${details.requested.group}:${details.requested.name}".toString()]
+            if (v) details.useVersion(v)
+        }
+    }
+}
