@@ -1,0 +1,30 @@
+name: Codespaces devcontainer
+
+on:
+  pull_request:
+    paths: ['.devcontainer/**', '.github/workflows/devcontainer.yml']
+  push:
+    branches: [main, develop]
+    paths: ['.devcontainer/**', '.github/workflows/devcontainer.yml']
+  workflow_dispatch:
+
+jobs:
+  # Build the devcontainer and check that the tools work and a chapter builds inside it.
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v7
+      - uses: devcontainers/ci@v0.3
+        with:
+          push: never
+          runCmd: |
+            set -e
+            java -version
+            docker version
+            docker compose version
+            kubectl version --client
+            helm version
+            minikube version
+            jq --version
+            cd Chapter04 && ./gradlew build -x test --no-daemon && docker compose build
