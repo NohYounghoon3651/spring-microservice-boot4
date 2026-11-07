@@ -19,7 +19,9 @@ jobs:
   # Every chapter is analyzed on its own. The chapters reuse the same package and class
   # names, and the Java extractor reads the whole checkout and keeps only one copy of each
   # class (89 of ~1,170 Java files), so later chapters were never analyzed. Each job therefore
-  # checks out only its own chapter (sparse checkout); source-root alone does not limit it.
+  # checks out only its own chapter (sparse checkout). source-root is not used: it does not
+  # limit the extractor and it would make the alert paths relative to the chapter
+  # (microservices/... instead of ChapterXX/microservices/...).
   analyze:
     name: Analyze ${{ matrix.project }}
     runs-on: ubuntu-latest
@@ -59,7 +61,6 @@ jobs:
         with:
           languages: java-kotlin
           build-mode: none
-          source-root: ${{ matrix.project }}
           # Rules excluded on purpose (see CONTRIBUTING.md, "CodeQL 알림 처리 기준"):
           # - spring-disabled-csrf-protection: the textbook's gateway, Eureka and config server are
           #   called service-to-service with HTTP Basic / OAuth2 tokens, without browser sessions
