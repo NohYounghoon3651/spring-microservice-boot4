@@ -76,7 +76,7 @@ git push -u origin release/1.1.0      # main 대상 PR, 병합 후 v1.1.0 태그
 | Label pull requests (`labeler.yml`) | PR | 바뀐 파일에 따라 `chXX`, `N부`, `작업`, `documentation` 라벨 부착 |
 | Publish wiki (`wiki.yml`) | `main`의 `docs/wiki/` 변경 | 위키에 게시 (커밋 `📝 docs: update wiki …`) |
 | Publish container images (`images.yml`) | 릴리스 발행 | 장별 서비스 이미지를 `ghcr.io/nohyounghoon3651/spring-microservice-boot4/chXX-<서비스>:<버전>`·`latest`로 게시 |
-| Dependabot (`dependabot.yml`) | 매월 | `develop` 대상 PR: Actions(`⬆️ ci(deps)`), Gradle 패치 버전(`⬆️ chore(deps)`). 취약점 알림은 Security 탭 |
+| Dependabot (`dependabot.yml`) | 매월 | `develop` 대상 PR: Actions(`⬆️ ci(deps)`), Gradle 패치 버전(`⬆️ chore(deps)`, Spring Boot는 4.0.9 고정이라 제외). 취약점 알림은 Security 탭 |
 
 ## CodeQL 알림 처리 기준
 

@@ -13,6 +13,8 @@
 >
 > **원본과 비교**: 교재 원본 코드(Boot 3.5 / Java 24)는 [`original-boot3`](https://github.com/NohYounghoon3651/spring-microservice-boot4/tree/original-boot3) 브랜치에 있습니다. [전체 변경 비교](https://github.com/NohYounghoon3651/spring-microservice-boot4/compare/original-boot3...boot4-migration-diff)는 파일이 많아 웹에서는 일부만 보이므로, 장별로는 `git diff origin/original-boot3 origin/main -- Chapter13`처럼 확인하세요. 기여 방법은 [CONTRIBUTING.md](CONTRIBUTING.md)를 참고하세요.
 >
+> **보안 점검**: CodeQL이 19개 프로젝트의 자바 코드 전체를 분석하고, Dependabot이 의존성 취약점을 알립니다. Spring Boot는 4.0.9로 고정하고, 취약한 라이브러리만 장별 `settings.gradle`의 `securityPatches`에서 패치 버전으로 올립니다([처리 기준](CONTRIBUTING.md#codeql-알림-처리-기준)).
+>
 > **브랜치**: Git Flow를 따릅니다. `main`은 릴리스된 검증본(태그 `vX.Y.Z`), `develop`은 통합 브랜치이며, 작업은 `feature/*`·`fix/*`·`docs/*` 브랜치(`<유형>/<이슈번호>-<설명>`)에서 `develop`으로 PR을 올립니다. 커밋 메시지와 PR 제목은 깃모지 규칙(`✨ feat: …`, `🐛 fix: …`, `📝 docs: …`)을 따릅니다. 실습은 `main` 또는 [최신 릴리스](https://github.com/NohYounghoon3651/spring-microservice-boot4/releases)로 하세요.
 
 # 스프링 부트 3와 스프링 클라우드를 활용한 마이크로서비스 구축
