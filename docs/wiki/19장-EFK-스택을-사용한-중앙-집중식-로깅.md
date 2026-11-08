@@ -18,6 +18,7 @@
 
 - 코드: [`Chapter19`](https://github.com/NohYounghoon3651/spring-microservice-boot4/tree/main/Chapter19)
 - Boot 4 변경 내역: [`Chapter19/MIGRATION-BOOT4.md`](https://github.com/NohYounghoon3651/spring-microservice-boot4/blob/main/Chapter19/MIGRATION-BOOT4.md)
+- 교재(영문 3판) 대응 가이드: [`Chapter19/BOOK-GUIDE.md`](https://github.com/NohYounghoon3651/spring-microservice-boot4/blob/main/Chapter19/BOOK-GUIDE.md) — 책의 쪽마다 이 저장소 코드와 다르게 읽어야 할 곳
 
 ## 실행하기
 

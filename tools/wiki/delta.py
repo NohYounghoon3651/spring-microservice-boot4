@@ -12,7 +12,7 @@ import sys
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
 CODE = ["Chapter03/1-spring-init", "Chapter03/2-basic-rest-services"] + [f"Chapter{n:02d}" for n in
         (4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 23)]
-SKIP = re.compile(r"(^|/)(MIGRATION-BOOT4\.md|gradlew(\.bat)?|gradle/wrapper/.*|\.gitignore)$")
+SKIP = re.compile(r"(^|/)(MIGRATION-BOOT4\.md|BOOK-GUIDE\.md|gradlew(\.bat)?|gradle/wrapper/.*|\.gitignore)$")
 
 
 def files(d):
