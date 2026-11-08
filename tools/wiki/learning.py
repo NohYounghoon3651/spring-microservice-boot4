@@ -254,8 +254,10 @@ def chapter_page(n):
     out += [" | ".join(nav), "", "## 학습 목표", ""] + [f"- {g}" for g in c["goals"]] + [""]
     if c["tech"]:
         out += ["## 이 장의 기술", "", ", ".join(f"`{t}`" for t in c["tech"]), ""]
+    guide = (f"- 교재(영문 3판) 대응 가이드: [`Chapter{n:02d}/BOOK-GUIDE.md`]({GH}/blob/main/Chapter{n:02d}/BOOK-GUIDE.md) "
+             "— 책의 쪽마다 이 저장소 코드와 다르게 읽어야 할 곳")
     if not c["code"]:
-        out += ["## 실습 코드", "", "이 장은 개념 설명 장이라 별도 예제 코드가 없습니다."]
+        out += ["## 실습 코드", "", "이 장은 개념 설명 장이라 별도 예제 코드가 없습니다.", "", guide]
         if n in (21, 22):
             out += ["", "이 저장소 코드가 검증된 도구 버전은 [실습 환경 준비](실습-환경-준비) 페이지를 참고하세요. "
                     "macOS·윈도우(WSL 2) 환경 자체는 CI에서 검증하지 않았습니다."]
@@ -263,7 +265,7 @@ def chapter_page(n):
     else:
         d = f"Chapter{n:02d}"
         out += ["## 실습 코드", "", f"- 코드: [`{d}`]({GH}/tree/main/{d})",
-                f"- Boot 4 변경 내역: [`{d}/MIGRATION-BOOT4.md`]({GH}/blob/main/{d}/MIGRATION-BOOT4.md)", "",
+                f"- Boot 4 변경 내역: [`{d}/MIGRATION-BOOT4.md`]({GH}/blob/main/{d}/MIGRATION-BOOT4.md)", guide, "",
                 "## 실행하기", ""] + run_section(n) + [""]
         key = "Chapter03/2-basic-rest-services" if n == 3 else d
         if key in DELTA:
