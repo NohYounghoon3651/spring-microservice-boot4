@@ -1,8 +1,6 @@
 # Spring Boot 4 마이그레이션 요약
 
-교재 원본 예제 코드(Java 24 / Spring Boot 3.5 / Spring Cloud 2025.0)와 이 저장소 코드의 차이 중 학습할 때 알아 두면 좋은 것들입니다. 전체 목록은 [MIGRATION-BOOT4.md](https://github.com/NohYounghoon3651/spring-microservice-boot4/blob/main/MIGRATION-BOOT4.md)에 있습니다.
-
-> **교재 본문과 원본 예제 코드의 버전**: 교재 본문(영문 3판)은 Spring Boot 3.0 / Java 17 기준으로 쓰였고, 교재의 원본 예제 코드는 이후 Spring Boot 3.5 / Java 24로 갱신되었습니다. 이 저장소는 그 원본 예제 코드를 Spring Boot 4.0.9 / Java 21로 옮긴 것입니다. 본문에 나오는 버전 숫자(예: `3.0.x`, Java 17)는 이 저장소의 버전으로 바꿔 읽으세요.
+교재(Java 24 / Spring Boot 3.5 / Spring Cloud 2025.0)와 이 저장소 코드의 차이 중 학습할 때 알아 두면 좋은 것들입니다. 전체 목록은 [MIGRATION-BOOT4.md](https://github.com/NohYounghoon3651/spring-microservice-boot4/blob/main/MIGRATION-BOOT4.md)에 있습니다.
 
 ## 원본 코드와 직접 비교하기
 
@@ -19,7 +17,7 @@ git diff origin/original-boot3 origin/main -- Chapter13          # 전체 차이
 
 ## 교재 본문과 다르게 보이는 부분
 
-| 위치 | 교재 원본 코드 | 이 저장소 |
+| 위치 | 교재 | 이 저장소 |
 |---|---|---|
 | Dockerfile (4장~) | `-Djarmode=layertools` | `-Djarmode=tools extract --layers --launcher` |
 | MongoDB 설정 (6장~) | `spring.data.mongodb.host` | `spring.mongodb.host` |
