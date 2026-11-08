@@ -4,3 +4,7 @@ out/
 *.iml
 .idea/
 .DS_Store
+
+# Python bytecode (tools/wiki)
+__pycache__/
+*.pyc

@@ -2,6 +2,7 @@ name: Dependency submission
 
 # Gradle dependencies cannot be read from build.gradle alone, so each chapter resolves its
 # dependencies and submits them to the dependency graph. Dependabot alerts use this graph.
+# Security patch versions are pinned in each chapter's root settings.gradle (securityPatches).
 on:
   push:
     branches: [main]
