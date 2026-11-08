@@ -107,6 +107,24 @@ GitHub CodeQL 분석에서 나온 알림 가운데 코드를 고치는 편이 �
 
 CSRF 해제, `withDefaultPasswordEncoder` 같은 나머지 알림은 교재 예제의 의도라 그대로 두었습니다. 기준은 [CONTRIBUTING.md](CONTRIBUTING.md#codeql-알림-처리-기준)에 있습니다.
 
+### 2-5. 의존성 보안 패치 (Dependabot 알림, Spring Boot 4.0.9 유지)
+
+Dependabot 취약점 알림을 켜고 장별 Gradle 의존성을 의존성 그래프에 등록하자, Spring Boot 4.0.9와 Spring Cloud 2025.1.4가 가져오는 라이브러리에서 알림 410건(높음 150, 보통 218, 낮음 42)이 나왔습니다. Spring Boot 버전은 4.0.9로 두고, 각 장의 루트 `settings.gradle` 끝에서 취약한 라이브러리만 패치 버전으로 올렸습니다(`dependencyManagement`의 명시 버전이 BOM보다 우선).
+
+| 라이브러리 | Boot 4.0.9 기본 | 패치 버전 | 가져오는 곳 |
+|---|---|---|---|
+| `com.rabbitmq:amqp-client` | 5.27.1 | 5.37.1 | spring-rabbit (RabbitMQ 바인더) |
+| `at.yawk.lz4:lz4-java` | 1.10.1 | 1.11.4 | kafka-clients |
+| `org.xerial.snappy:snappy-java` | 1.1.10.7 | 1.1.10.9 | kafka-clients |
+| `com.google.guava:guava` | 16.0 / 33.0.0-jre | 33.7.2-jre | Netflix Eureka (archaius, servo) |
+| `org.apache.httpcomponents:httpclient` | 4.5.3 / 4.5.13 | 4.5.14 | Netflix Eureka |
+| `org.apache.httpcomponents.client5:httpclient5` | 5.5.2 | 5.6.3 | Spring Cloud, 빌드팩 |
+| `org.apache.httpcomponents.core5:httpcore5`·`-h2` | 5.3.6 | 5.4.3 | httpclient5 |
+| `org.apache.commons:commons-lang3` | 3.16.0 | 3.20.0 | Spring Boot Gradle 플러그인(빌드팩) |
+| `io.opentelemetry:*` | 1.55.0 | 1.67.0 (`exporter-zipkin`은 마지막 버전 1.64.0) | Micrometer Tracing OTel 브리지 |
+
+패치 버전이 없는 3개는 그대로 두고 사유를 남겨 알림을 닫았습니다: `commons-configuration` 1.10·`commons-lang` 2.6(Netflix Eureka의 archaius), `software.amazon.ion:ion-java` 1.0.2(Eureka가 가져오는 AWS SDK v1). 모두 Eureka 내부에서만 쓰이고 예제 코드가 직접 호출하지 않습니다.
+
 ## 3. 설정 (application.yml, config-repo, docker-compose, 헬름)
 
 | 원본 | 변경 후 |

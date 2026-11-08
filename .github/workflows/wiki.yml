@@ -23,7 +23,8 @@ jobs:
             exit 1
           fi
           echo "Wiki before: $(ls wiki | wc -l) files"; git -C wiki log --oneline -3
-          rsync -a --delete --exclude .git docs/wiki/ wiki/
+          # --checksum: a page whose size and mtime did not change must still be copied
+          rsync -a --checksum --delete --exclude .git docs/wiki/ wiki/
           cd wiki
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"

@@ -92,6 +92,14 @@ git push -u origin release/1.1.0      # main 대상 PR, 병합 후 v1.1.0 태그
 
 새로운 종류의 알림은 이슈로 남겨 판단한 뒤 이 표에 추가해 주세요. 교재 의도라서 모든 장에서 그대로 둘 규칙이면 `codeql.yml`의 `query-filters`에 추가하고, 한두 곳뿐이면 알림 화면에서 사유와 함께 닫습니다.
 
+## Dependabot 취약점 알림 처리 기준
+
+[Dependabot 알림](https://github.com/NohYounghoon3651/spring-microservice-boot4/security/dependabot)은 각 장의 루트 `settings.gradle`이 기준입니다. Spring Boot 버전(4.0.9)은 교재 기준이라 올리지 않습니다.
+
+1. 패치 버전이 있으면 모든 장의 루트 `settings.gradle`에 있는 `securityPatches` 표에 `그룹:아티팩트: 버전`을 추가하고, `MIGRATION-BOOT4.md` 2-5절 표를 고칩니다.
+2. 패치 버전이 없으면 알림을 **Risk is tolerable**로 닫고, 어느 라이브러리가 가져오는지와 예제에서 쓰이지 않는다는 사유를 남깁니다.
+3. 전체 CI(빌드, 전체 시스템 테스트, 쿠버네티스)가 통과해야 병합합니다. 알림은 `main`에 반영된 뒤 의존성 등록 워크플로가 돌면 자동으로 닫힙니다.
+
 ## 이슈
 
 - **장별 학습 이슈**: #1~#23. 각 장은 `개념` · `코드 분석` · `실습` · `심화` 하위 이슈로 나뉘어 있습니다.
