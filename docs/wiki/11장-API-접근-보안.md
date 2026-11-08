@@ -9,6 +9,8 @@
 - HTTPS로 외부 통신을 암호화한다
 - Spring Authorization Server(이제 Spring Security 7의 일부)로 OAuth 2.0 / OIDC 인가 서버를 만든다
 - 게이트웨이와 product-composite를 리소스 서버로 보호하고 스코프 기반 권한을 적용한다
+- 유레카 서버 접근을 HTTP Basic 인증으로 보호한다
+- (선택) 외부 OpenID Connect 공급자(Auth0)로도 테스트해 본다
 
 ## 이 장의 기술
 
