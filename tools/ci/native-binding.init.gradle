@@ -1,0 +1,13 @@
+// CI only: mount the pre-downloaded native-image dependencies (see prefetch-native-deps.sh)
+// into the Paketo builder as a dependency-mapping binding.
+// Usage: NIK_BINDING_DIR=<dir> ./gradlew --init-script tools/ci/native-binding.init.gradle ... bootBuildImage
+def bindingDir = System.getenv('NIK_BINDING_DIR')
+if (bindingDir && new File(bindingDir, 'type').exists()) {
+    allprojects {
+        plugins.withId('org.springframework.boot') {
+            tasks.named('bootBuildImage') {
+                bindings.add("${bindingDir}:/platform/bindings/native-deps:ro".toString())
+            }
+        }
+    }
+}
