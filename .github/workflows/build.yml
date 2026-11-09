@@ -249,12 +249,23 @@ jobs:
           distribution: temurin
           java-version: '21'
       - uses: gradle/actions/setup-gradle@v6
+      # The buildpack's own ~350 MB GraalVM download from GitHub releases often fails on hosted
+      # runners, so download it here with retries and pass it in as a dependency-mapping binding.
+      - name: Prefetch GraalVM for the buildpack
+        run: bash ../tools/ci/prefetch-native-deps.sh "$RUNNER_TEMP/native-deps"
       - name: Build native images
+        env:
+          NIK_BINDING_DIR: ${{ runner.temp }}/native-deps
         run: |
           chmod +x gradlew test-em-all.bash
           ./gradlew build -x test --no-daemon
           for s in product recommendation review product-composite; do
-            ./gradlew :microservices:$s-service:bootBuildImage --no-daemon
+            for attempt in 1 2 3; do
+              ./gradlew --init-script ../tools/ci/native-binding.init.gradle \
+                :microservices:$s-service:bootBuildImage --no-daemon && break
+              [ $attempt = 3 ] && exit 1
+              echo "::warning::bootBuildImage for $s failed (attempt $attempt), retrying"; sleep 30
+            done
           done
           docker images | grep hands-on
       - name: Run test-em-all.bash (native)
