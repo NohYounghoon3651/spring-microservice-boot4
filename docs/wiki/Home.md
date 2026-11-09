@@ -53,6 +53,7 @@
 
 ## 참고
 
+- [손코딩 워크북](https://github.com/NohYounghoon3651/spring-microservice-boot4/blob/main/workbook/README.md) — 3장부터 23장까지 모든 코드를 직접 쳐서 완성
 - [Spring Boot 4 마이그레이션 요약](Spring-Boot-4-마이그레이션-요약)
 - [자주 발생하는 문제](자주-발생하는-문제)
 - [브랜치 전략](브랜치-전략)
