@@ -318,6 +318,19 @@ jobs:
             echo "::error::docs/wiki is out of date. Run 'python3 tools/wiki/learning.py' and commit the result."
             exit 1
           fi
+      # Dependabot PRs change build files in every chapter; they cannot push the regenerated
+      # workbook, so the check only warns there (see CONTRIBUTING.md, "워크북").
+      - name: Regenerate workbook with tools/workbook/build.py
+        continue-on-error: ${{ github.actor == 'dependabot[bot]' }}
+        run: |
+          python3 tools/workbook/build.py
+          if ! git diff --quiet -- workbook; then
+            git -c core.quotePath=false diff --stat -- workbook
+            echo "::error::workbook is out of date. Run 'python3 tools/workbook/build.py' and commit the result."
+            exit 1
+          fi
+      - name: Rebuild every chapter from the workbook alone
+        run: python3 tools/workbook/verify.py
 
   ci-result:
     name: CI result
