@@ -24,9 +24,10 @@
 |---|---|---|
 | `README.md`의 도서 정보·책 소개 부분 | 한국어판 도서 정보와 소개 글 | 위키북스 |
 | `cover.jpg` | 한국어판 표지 | 위키북스 |
-| `Assessments.pdf` | 원서 각 장의 질문에 대한 해답 | Packt |
 
-권리자가 요청하면 이 자료는 바로 내리겠습니다. [이슈](https://github.com/NohYounghoon3651/spring-microservice-boot4/issues)나 저장소 소유자에게 알려 주세요.
+원본 예제 코드에는 원서 각 장의 질문에 대한 해답(`Assessments.pdf`, Packt)도 들어 있었지만, 출판사 자료라서 이 저장소에서는 뺐습니다. 해답은 교재(원서는 [Packt 도서 페이지](https://www.packtpub.com/product/microservices-with-spring-boot-and-spring-cloud/9781805801276), 한국어판은 [위키북스 도서 페이지](https://wikibook.co.kr/spring-microservice/))에서 확인하세요.
+
+권리자가 요청하면 위 표의 자료도 바로 내리겠습니다. [이슈](https://github.com/NohYounghoon3651/spring-microservice-boot4/issues)나 저장소 소유자에게 알려 주세요.
 
 ## 교재 본문
 
