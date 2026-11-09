@@ -265,7 +265,9 @@ def chapter_page(n):
     else:
         d = f"Chapter{n:02d}"
         out += ["## 실습 코드", "", f"- 코드: [`{d}`]({GH}/tree/main/{d})",
-                f"- Boot 4 변경 내역: [`{d}/MIGRATION-BOOT4.md`]({GH}/blob/main/{d}/MIGRATION-BOOT4.md)", guide, "",
+                f"- Boot 4 변경 내역: [`{d}/MIGRATION-BOOT4.md`]({GH}/blob/main/{d}/MIGRATION-BOOT4.md)", guide,
+                f"- 손코딩 워크북: [`workbook/Chapter{n:02d}.md`]({GH}/blob/main/workbook/Chapter{n:02d}.md) "
+                "— 이 장의 코드를 단계별로 직접 쳐서 완성", "",
                 "## 실행하기", ""] + run_section(n) + [""]
         key = "Chapter03/2-basic-rest-services" if n == 3 else d
         if key in DELTA:
@@ -341,7 +343,8 @@ def home():
         for n in sorted(k for k in C if C[k]["part"] == p):
             out.append(f"- {link(n)}" + ("" if C[n]["code"] else " _(개념)_"))
         out.append("")
-    out += ["## 참고", "", "- [Spring Boot 4 마이그레이션 요약](Spring-Boot-4-마이그레이션-요약)",
+    out += ["## 참고", "", f"- [손코딩 워크북]({GH}/blob/main/workbook/README.md) — 3장부터 23장까지 모든 코드를 직접 쳐서 완성",
+            "- [Spring Boot 4 마이그레이션 요약](Spring-Boot-4-마이그레이션-요약)",
             "- [자주 발생하는 문제](자주-발생하는-문제)",
             "- [브랜치 전략](브랜치-전략)",
             f"- 전체 변경 내역: [MIGRATION-BOOT4.md]({GH}/blob/main/MIGRATION-BOOT4.md)",
@@ -483,4 +486,5 @@ def main():
     print("wiki pages:", len(files), "issues:", len(issues))
 
 
-main()
+if __name__ == "__main__":
+    main()

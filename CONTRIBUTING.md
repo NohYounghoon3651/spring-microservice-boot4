@@ -68,7 +68,7 @@ git push -u origin release/1.1.0      # main 대상 PR, 병합 후 v1.1.0 태그
 
 | 워크플로 | 언제 | 하는 일 |
 |---|---|---|
-| Build all chapters (`build.yml`) | PR, `develop`·`main` push, 매주 월요일 03:00 KST | 19개 프로젝트 빌드·테스트, docker compose·Kafka·파티션·네이티브 전체 시스템 테스트, 위키 생성 결과 확인(**Wiki up to date**). 결과는 **CI result** 하나로 모음 |
+| Build all chapters (`build.yml`) | PR, `develop`·`main` push, 매주 월요일 03:00 KST | 19개 프로젝트 빌드·테스트, docker compose·Kafka·파티션·네이티브 전체 시스템 테스트, 위키·워크북 생성 결과 확인(**Wiki up to date**: 워크북만으로 모든 장을 다시 만들어 저장소 코드와 비교). 결과는 **CI result** 하나로 모음 |
 | Kubernetes (`kubernetes.yml`) | `main` 대상 PR, `main` push, 매주 월요일 05:00 KST | 헬름 렌더링·스키마 검증, minikube(16·17장), minikube + Istio(18·19·20·23장) 배포 후 테스트 |
 | CodeQL (`codeql.yml`) | `main`·`develop` PR·push, 매주 수요일 04:30 KST | 19개 프로젝트를 장별로 따로 분석하는 자바 코드 보안 분석 |
 | Dependency submission (`dependency-submission.yml`) | `main` push | 장별 Gradle 의존성을 의존성 그래프에 등록. Dependabot 취약점 알림이 이 그래프를 사용 |
@@ -125,6 +125,11 @@ git push -u origin release/1.1.0      # main 대상 PR, 병합 후 v1.1.0 태그
   ```bash
   python3 tools/wiki/learning.py
   ```
+- **손코딩 워크북**(`workbook/`)은 [`tools/workbook/build.py`](tools/workbook)가 장별 코드에서 만듭니다. 코드를 고친 PR은 위키와 함께 워크북도 다시 만들어 커밋하세요. `verify.py`는 워크북만으로 3장부터 23장까지 다시 만들어 저장소 코드와 똑같은지 확인합니다.
+  ```bash
+  python3 tools/workbook/build.py && python3 tools/workbook/verify.py
+  ```
+  단계별 설명 문구는 `tools/workbook/notes.py`에서 고칩니다. Dependabot PR은 워크북을 고칠 수 없어서 이 검사가 경고로만 표시됩니다. Dependabot PR을 병합한 뒤에는 위 명령으로 워크북을 갱신하는 PR을 올려 주세요.
 - 직접 쓰는 페이지(실습 환경 준비, 마이그레이션 요약, 자주 발생하는 문제, 브랜치 전략, Codespaces와 컨테이너 이미지)는 스크립트가 덮어쓰지 않으니 `docs/wiki/`에서 바로 고치면 됩니다. 장별 학습 목표·복습 질문 같은 문구는 `tools/wiki/learning.py`·`review_qa.py`를 고칩니다.
 
 ## 원본과 비교
