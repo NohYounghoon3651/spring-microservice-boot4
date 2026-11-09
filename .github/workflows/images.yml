@@ -52,8 +52,19 @@ jobs:
           chmod +x gradlew
           ./gradlew build -x test --no-daemon
           docker compose build
+          # Put the license notices into every published image (MIT requires them in copies)
+          LIC=$(mktemp -d)
+          cp ../LICENSE ../NOTICE.md "$LIC/"
+          printf 'ARG BASE\nFROM ${BASE}\nCOPY LICENSE NOTICE.md /licenses/\n' > "$LIC/Dockerfile"
           for img in $(docker compose config --images | grep '^hands-on/' | sort -u); do
             name=${img#hands-on/}; name=${name%%:*}
+            docker build -q --build-arg BASE="$img" -t "$img" \
+              --label org.opencontainers.image.licenses=MIT \
+              --label org.opencontainers.image.source=https://github.com/${{ github.repository }} \
+              --label org.opencontainers.image.revision=${{ github.sha }} \
+              --label org.opencontainers.image.version="$VERSION" \
+              --label org.opencontainers.image.title="$CH-$name" \
+              "$LIC"
             for tag in "$VERSION" latest; do
               docker tag "$img" "$REPO/$CH-$name:$tag"
               docker push "$REPO/$CH-$name:$tag"

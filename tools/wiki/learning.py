@@ -464,7 +464,7 @@ def main():
     wd = os.path.join(ROOT, "docs", "wiki")
     os.makedirs(wd, exist_ok=True)
     files = {"Home.md": home(), "_Sidebar.md": sidebar(),
-             "_Footer.md": f"Spring Boot 4.0.9 · Java 21 · Spring Cloud 2025.1.4 — [저장소]({GH}) · [이슈]({GH}/issues) · [Discussions]({GH}/discussions) · [릴리스]({GH}/releases) · [CI]({GH}/actions)\n"}
+             "_Footer.md": f"Spring Boot 4.0.9 · Java 21 · Spring Cloud 2025.1.4 — [저장소]({GH}) · [이슈]({GH}/issues) · [Discussions]({GH}/discussions) · [릴리스]({GH}/releases) · [CI]({GH}/actions) · [출처와 라이선스]({GH}/blob/main/NOTICE.md)\n"}
     # Hand-maintained pages are created only once and never overwritten
     for k, v in {"실습-환경-준비.md": ENV_PAGE, "Spring-Boot-4-마이그레이션-요약.md": MIG_PAGE, "자주-발생하는-문제.md": TROUBLE_PAGE}.items():
         if not os.path.exists(os.path.join(wd, k)):
