@@ -4,9 +4,9 @@
 def bindingDir = System.getenv('NIK_BINDING_DIR')
 if (bindingDir && new File(bindingDir, 'type').exists()) {
     allprojects {
-        plugins.withId('org.springframework.boot') {
-            tasks.named('bootBuildImage') {
-                bindings.add("${bindingDir}:/platform/bindings/native-deps:ro".toString())
+        tasks.configureEach { task ->
+            if (task.name == 'bootBuildImage') {
+                task.bindings.add("${bindingDir}:/platform/bindings/native-deps:ro".toString())
             }
         }
     }
