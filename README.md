@@ -15,6 +15,8 @@
 >
 > **영문 3판으로 공부한다면**: 『Microservices with Spring Boot 3 and Spring Cloud』 영문 3판(Spring Boot 3.0 / Java 17)을 보며 실습할 때 이 저장소 코드와 다르게 읽어야 할 곳을 각 장 폴더의 `BOOK-GUIDE.md`(예: [`Chapter11/BOOK-GUIDE.md`](Chapter11/BOOK-GUIDE.md))에 쪽 번호와 함께 정리했습니다. 1·2·8·21·22장처럼 예제 코드가 없는 장도 폴더에 가이드만 있습니다.
 >
+> **출처와 라이선스**: 예제 코드의 원저작자는 마그누스 라르손(Magnus Larsson)과 Packt이며 MIT 라이선스로 공개되어 있습니다. 이 저장소는 그 코드를 Spring Boot 4로 수정하고 학습 자료를 더한 것으로, 같은 MIT 라이선스를 따릅니다. 아래 도서 정보·책 소개와 `cover.jpg`(위키북스), `Assessments.pdf`(Packt)는 원본 예제 코드에 들어 있던 출판사 자료를 그대로 둔 것입니다. 자세한 내용은 [NOTICE.md](NOTICE.md)와 [LICENSE](LICENSE)를 보세요.
+>
 > **보안 점검**: CodeQL이 19개 프로젝트의 자바 코드 전체를 분석하고, Dependabot이 의존성 취약점을 알립니다. Spring Boot는 4.0.9로 고정하고, 취약한 라이브러리만 장별 `settings.gradle`의 `securityPatches`에서 패치 버전으로 올립니다([처리 기준](CONTRIBUTING.md#codeql-알림-처리-기준)).
 >
 > **브랜치**: Git Flow를 따릅니다. `main`은 릴리스된 검증본(태그 `vX.Y.Z`), `develop`은 통합 브랜치이며, 작업은 `feature/*`·`fix/*`·`docs/*` 브랜치(`<유형>/<이슈번호>-<설명>`)에서 `develop`으로 PR을 올립니다. 커밋 메시지와 PR 제목은 깃모지 규칙(`✨ feat: …`, `🐛 fix: …`, `📝 docs: …`)을 따릅니다. 실습은 `main` 또는 [최신 릴리스](https://github.com/NohYounghoon3651/spring-microservice-boot4/releases)로 하세요.
